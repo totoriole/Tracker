@@ -66,6 +66,7 @@ final class TrackerScreenViewController: UIViewController {
     private var initialTrackerImage: UIImageView = {
         let imageTracker = UIImageView()
         imageTracker.image = UIImage(named: "InitialIcons")
+        imageTracker.translatesAutoresizingMaskIntoConstraints = false
         return imageTracker
     }()
     
@@ -82,6 +83,7 @@ final class TrackerScreenViewController: UIViewController {
     private var plugTrackerImage: UIImageView = {
         let imagePlug = UIImageView()
         imagePlug.image = UIImage(named: "PlugIcons")
+        imagePlug.translatesAutoresizingMaskIntoConstraints = false
         return imagePlug
     }()
     
@@ -101,7 +103,7 @@ final class TrackerScreenViewController: UIViewController {
         view.backgroundColor = .whiteBackground
         configureViews()
         configureConstraints()
-        //        showInitialOption()
+        showInitialOption()
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: pluseButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
     }
@@ -114,11 +116,11 @@ final class TrackerScreenViewController: UIViewController {
         view.addSubview(searchBar)
         view.addSubview(initialTrackerImage)
         view.addSubview(initialLabel)
-//        view.addSubview(plugLabel)
-//        view.addSubview(plugTrackerImage)
+        view.addSubview(plugLabel)
+        view.addSubview(plugTrackerImage)
         
     }
-    //
+    
     internal func configureConstraints() {
         NSLayoutConstraint.activate([
             
@@ -132,20 +134,20 @@ final class TrackerScreenViewController: UIViewController {
             initialTrackerImage.widthAnchor.constraint(equalToConstant: 80),
             initialTrackerImage.heightAnchor.constraint(equalToConstant: 80),
             initialTrackerImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            initialTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
-////
+            initialTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 220),
+
             initialLabel.topAnchor.constraint(equalTo: initialTrackerImage.bottomAnchor, constant: 8),
-            initialLabel.centerXAnchor.constraint(equalTo: initialTrackerImage.centerXAnchor)
-//
-//            plugTrackerImage.widthAnchor.constraint(equalToConstant: 80),
-//            plugTrackerImage.heightAnchor.constraint(equalToConstant: 80),
-//            plugTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8),
-//            plugTrackerImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-//            plugTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 220),
-//            
-//            plugLabel.topAnchor.constraint(equalTo: plugTrackerImage.bottomAnchor, constant: 8),
-//            plugLabel.centerXAnchor.constraint(equalTo: plugTrackerImage.centerXAnchor)
-//
+            initialLabel.centerXAnchor.constraint(equalTo: initialTrackerImage.centerXAnchor),
+
+            plugTrackerImage.widthAnchor.constraint(equalToConstant: 80),
+            plugTrackerImage.heightAnchor.constraint(equalToConstant: 80),
+            plugTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8),
+            plugTrackerImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            plugTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 220),
+            
+            plugLabel.topAnchor.constraint(equalTo: plugTrackerImage.bottomAnchor, constant: 8),
+            plugLabel.centerXAnchor.constraint(equalTo: plugTrackerImage.centerXAnchor)
+
         ])
     }
     
