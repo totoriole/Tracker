@@ -112,10 +112,10 @@ final class TrackerScreenViewController: UIViewController {
         view.addSubview(datePicker)
         view.addSubview(textLabel)
         view.addSubview(searchBar)
+        view.addSubview(initialTrackerImage)
         view.addSubview(initialLabel)
-        //        view.addSubview(initialTrackerImage)
-        //        view.addSubview(plugLabel)
-        //        view.addSubview(plugTrackerImage)
+//        view.addSubview(plugLabel)
+//        view.addSubview(plugTrackerImage)
         
     }
     //
@@ -131,13 +131,11 @@ final class TrackerScreenViewController: UIViewController {
             
             initialTrackerImage.widthAnchor.constraint(equalToConstant: 80),
             initialTrackerImage.heightAnchor.constraint(equalToConstant: 80),
-//            initialTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8),
             initialTrackerImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            initialTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 220)
-//
-//
-//            initialLabel.topAnchor.constraint(equalTo: initialTrackerImage.bottomAnchor, constant: 8),
-//            initialLabel.centerXAnchor.constraint(equalTo: initialTrackerImage.centerXAnchor),
+            initialTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 20),
+////
+            initialLabel.topAnchor.constraint(equalTo: initialTrackerImage.bottomAnchor, constant: 8),
+            initialLabel.centerXAnchor.constraint(equalTo: initialTrackerImage.centerXAnchor)
 //
 //            plugTrackerImage.widthAnchor.constraint(equalToConstant: 80),
 //            plugTrackerImage.heightAnchor.constraint(equalToConstant: 80),
