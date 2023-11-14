@@ -9,6 +9,10 @@ import UIKit
 
 final class TrackerScreenViewController: UIViewController {
     
+    var categories: [TrackerCategory] = []
+    var completedTrackers: [TrackerRecord] = []
+    
+    
     private lazy var pluseButton: UIButton = {
         guard let image = UIImage(named: "PluseButton") else {
             assert(false, "Failed to create button image")
