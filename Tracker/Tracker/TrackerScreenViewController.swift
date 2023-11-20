@@ -8,10 +8,11 @@
 import UIKit
 
 final class TrackerScreenViewController: UIViewController {
-    
-    var categories: [TrackerCategory] = []
-    var completedTrackers: [TrackerRecord] = []
-    
+
+    private var categories: [TrackerCategory] = []
+    private var completedTrackers: [TrackerRecord] = []
+    private var visibleCategories: [TrackerCategory] = []
+    private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private lazy var pluseButton: UIButton = {
         guard let image = UIImage(named: "PluseButton") else {
@@ -28,24 +29,37 @@ final class TrackerScreenViewController: UIViewController {
         return imageButton
     }()
     
-    let dateFormatter: DateFormatter = {
+    private lazy var dateFormatter = {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd.MM.yy"
+        formatter.dateFormat = "dd.MM.yy" // Формат даты
         return formatter
     }()
     
     private lazy var datePicker: UIDatePicker = {
         let picker = UIDatePicker()
-        let currentDate = Date() // Создание экземпляра Date, представляющего текущую дату
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        picker.preferredDatePickerStyle = .compact
         picker.datePickerMode = .date
         picker.backgroundColor = .whiteBackground
         picker.maximumDate = Date()
+        
+        if let currentLocale = Locale.current.languageCode {
+            picker.locale = Locale(identifier: currentLocale)
+        } else {
+            picker.locale = Locale(identifier: "ru_RU")
+        }// Установка локали для форматирования
         picker.calendar.firstWeekday = 2
+        
+        // Использование DateFormatter для отображения даты в сокращенном формате
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
         // Обработка изменений в UIDatePicker
-        picker.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+        picker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+        
+        
         // Настройка положения и размеров
         picker.frame = CGRect(x: 0, y: 0, width: 100, height: 34) // размеры и положение
-        picker.translatesAutoresizingMaskIntoConstraints = false
+        
         return picker
     }()
     
@@ -110,6 +124,8 @@ final class TrackerScreenViewController: UIViewController {
         showInitialOption()
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: pluseButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        collectionView.dataSource = self
+        collectionView.delegate = self
     }
     
     
@@ -139,10 +155,10 @@ final class TrackerScreenViewController: UIViewController {
             initialTrackerImage.heightAnchor.constraint(equalToConstant: 80),
             initialTrackerImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
             initialTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 220),
-
+            
             initialLabel.topAnchor.constraint(equalTo: initialTrackerImage.bottomAnchor, constant: 8),
             initialLabel.centerXAnchor.constraint(equalTo: initialTrackerImage.centerXAnchor),
-
+            
             plugTrackerImage.widthAnchor.constraint(equalToConstant: 80),
             plugTrackerImage.heightAnchor.constraint(equalToConstant: 80),
             plugTrackerImage.topAnchor.constraint(equalTo: searchBar.bottomAnchor, constant: 8),
@@ -151,7 +167,7 @@ final class TrackerScreenViewController: UIViewController {
             
             plugLabel.topAnchor.constraint(equalTo: plugTrackerImage.bottomAnchor, constant: 8),
             plugLabel.centerXAnchor.constraint(equalTo: plugTrackerImage.centerXAnchor)
-
+            
         ])
     }
     
@@ -167,11 +183,39 @@ final class TrackerScreenViewController: UIViewController {
         
     }
     
+    //    @objc func datePickerValueChanged(_ sender: UIDatePicker) {
+    //        let calendar = Calendar.current
+    //                let filterWeekday = calendar.component(.weekday, from: datePicker.date)
+    //                self.selectedDate = filterWeekday
+    //
+    //    }
+    
     @objc func datePickerValueChanged(_ sender: UIDatePicker) {
         let selectedDate = sender.date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yy" // Формат даты
         let formattedDate = dateFormatter.string(from: selectedDate)
-        
+        print("Выбранная дата: \(formattedDate)")
     }
     
 }
 
+// MARK: - UICollectionViewDataSource
+extension TrackerScreenViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        visibleCategories[section].trackers.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: TrackerCell.identifire, for: indexPath) as? TrackerCell else {
+            return UICollectionViewCell()
+        }
+        return cell
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension TrackerScreenViewController: UICollectionViewDelegateFlowLayout {
+    
+}
