@@ -25,6 +25,7 @@
 		BBF4CF5A2B0D347700F2CCC0 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF592B0D347700F2CCC0 /* ScheduleViewController.swift */; };
 		BBF4CF5C2B0D350900F2CCC0 /* CreateTrackerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF5B2B0D350900F2CCC0 /* CreateTrackerViewCell.swift */; };
 		BBF4CF5F2B0D37FC00F2CCC0 /* HeaderSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF5E2B0D37FC00F2CCC0 /* HeaderSectionView.swift */; };
+		BBF4CF612B0D75B800F2CCC0 /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF602B0D75B800F2CCC0 /* ScheduleCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -48,6 +49,7 @@
 		BBF4CF592B0D347700F2CCC0 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
 		BBF4CF5B2B0D350900F2CCC0 /* CreateTrackerViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewCell.swift; sourceTree = "<group>"; };
 		BBF4CF5E2B0D37FC00F2CCC0 /* HeaderSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderSectionView.swift; sourceTree = "<group>"; };
+		BBF4CF602B0D75B800F2CCC0 /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,6 +140,7 @@
 			isa = PBXGroup;
 			children = (
 				BBF4CF592B0D347700F2CCC0 /* ScheduleViewController.swift */,
+				BBF4CF602B0D75B800F2CCC0 /* ScheduleCell.swift */,
 			);
 			path = Schedule;
 			sourceTree = "<group>";
@@ -226,6 +229,7 @@
 				BBE12D8D2B0D0A6E00C58555 /* AddTrackerViewController.swift in Sources */,
 				99F97C852AF4B01E000811A7 /* TabBarController.swift in Sources */,
 				99F97C882AF4B8FD000811A7 /* StatisticScreenViewController.swift in Sources */,
+				BBF4CF612B0D75B800F2CCC0 /* ScheduleCell.swift in Sources */,
 				BBF4CF5A2B0D347700F2CCC0 /* ScheduleViewController.swift in Sources */,
 				BBF4CF502B0D2BB100F2CCC0 /* CreateTrackerViewController.swift in Sources */,
 				994313822AEAF50100410757 /* TrackerScreenViewController.swift in Sources */,

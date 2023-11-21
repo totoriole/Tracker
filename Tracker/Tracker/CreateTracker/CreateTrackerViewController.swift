@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - Протокол для действий с трекерами
 protocol TrackersActions {
     func appendTracker(tracker: Tracker)
     func reload()
@@ -15,7 +16,7 @@ protocol TrackersActions {
 
 final class CreateTrackerViewController: UIViewController {
     
-    var trackersViewController: TrackersActions?
+    var trackersViewController: TrackersActions? // представляет объект, соответствующий протоколу TrackersActions. Это позволяет взаимодействовать с другим контроллером, реализующим этот протокол.
     let cellReuseIdentifier = "CreateTrackersTableViewCell"
     
     private var selectedDays: [Weekday] = []
@@ -85,7 +86,7 @@ final class CreateTrackerViewController: UIViewController {
         createButton.layer.cornerRadius = 16
         createButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         createButton.setTitle("Создать", for: .normal)
-        createButton.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
+        createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
         createButton.translatesAutoresizingMaskIntoConstraints = false
         createButton.isEnabled = false
         return createButton
@@ -93,11 +94,11 @@ final class CreateTrackerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        // Начальная настройка
         view.backgroundColor = .whiteday
         configureViews()
         configureConstraints()
-        
+        // Настройка делегатов и таблицы
         addTrackerName.delegate = self
         trackersTableView.delegate = self
         trackersTableView.dataSource = self
@@ -105,7 +106,8 @@ final class CreateTrackerViewController: UIViewController {
         trackersTableView.layer.cornerRadius = 16
         trackersTableView.separatorStyle = .none
     }
-    
+// MARK: - Конфигурация пользовательского интерфейса
+    // Добавление элементов пользовательского интерфейса в иерархию представлений
     private func configureViews() {
         view.addSubview(header)
         view.addSubview(addTrackerName)
@@ -113,7 +115,7 @@ final class CreateTrackerViewController: UIViewController {
         view.addSubview(cancelButton)
         view.addSubview(createButton)
     }
-    
+    // Настройка ограничений автоматического макетирования
     func configureConstraints() {
         NSLayoutConstraint.activate([
             view.topAnchor.constraint(equalTo: view.topAnchor),
@@ -141,17 +143,20 @@ final class CreateTrackerViewController: UIViewController {
             createButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: (view.frame.width/2) + 4)
         ])
     }
-    
+// MARK: - Обработчики действий кнопок
     @objc private func clearTextField() {
+        // Действие для очистки текстового поля
         addTrackerName.text = ""
         clearButton.isHidden = true
     }
     
     @objc private func cancelButtonTapped() {
+        // Действие для закрытия контроллера представления
         dismiss(animated: true)
     }
     
-    @objc private func createButtonTapped() {
+    @objc private func didTapCreateButton() {
+        // Действие для создания нового трекера и уведомления родительского контроллера
         guard let text = addTrackerName.text, !text.isEmpty else {
             return
         }
@@ -165,6 +170,7 @@ final class CreateTrackerViewController: UIViewController {
 // MARK: - SelectedDays
 extension CreateTrackerViewController: SelectedDays {
     func save(indicies: [Int]) {
+        // Реализация сохранения выбранных дней
         for index in indicies {
             self.selectedDays.append(Weekday.allCases[index])
         }
@@ -173,20 +179,26 @@ extension CreateTrackerViewController: SelectedDays {
 
 // MARK: - UITableViewDelegate
 extension CreateTrackerViewController: UITableViewDelegate {
+    // Устанавливаем высоту ячейки в таблице
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }
-    
+    // Обрабатываем выбор ячейки
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 1 {
+            // Создаем экземпляр ScheduleViewController и устанавливаем свойство createTrackerViewController
             let scheduleViewController = ScheduleViewController()
             scheduleViewController.createTrackerViewController = self
+            // Показываем ScheduleViewController
             present(scheduleViewController, animated: true, completion: nil)
         }
+        // Снимаем выделение с выбранной ячейки
         trackersTableView.deselectRow(at: indexPath, animated: true)
     }
     
+    // Вызывается перед отображением ячейки
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Создаем и добавляем разделительную линию внизу ячейки
         let separatorInset: CGFloat = 16
         let separatorWidth = tableView.bounds.width - separatorInset * 2
         let separatorHeight: CGFloat = 1.0
@@ -200,12 +212,15 @@ extension CreateTrackerViewController: UITableViewDelegate {
 
 // MARK: - UITableViewDataSource
 extension CreateTrackerViewController: UITableViewDataSource {
+    // Количество ячеек в секции
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
-    
+    // Возвращаем ячейку для определенного индекса
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // Создаем и конфигурируем ячейку для таблицы
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as? CreateTrackerViewCell else { return UITableViewCell() }
+        // Обновляем содержимое ячейки в зависимости от индекса
         if indexPath.row == 0 {
             cell.update(with: "Категория")
         } else if indexPath.row == 1 {
@@ -217,8 +232,11 @@ extension CreateTrackerViewController: UITableViewDataSource {
 
 // MARK: - UITextFieldDelegate
 extension CreateTrackerViewController: UITextFieldDelegate {
+    // Вызывается при изменении текста в текстовом поле
     func textFieldDidChangeSelection(_ textField: UITextField) {
+        // Скрываем или показываем кнопку очистки в зависимости от наличия текста в поле
         clearButton.isHidden = textField.text?.isEmpty ?? true
+        // Включаем или отключаем кнопку создания в зависимости от наличия текста в поле
         if textField.text?.isEmpty ?? false {
             createButton.isEnabled = false
             createButton.backgroundColor = .greyYP
@@ -227,8 +245,9 @@ extension CreateTrackerViewController: UITextFieldDelegate {
             createButton.backgroundColor = .blackday
         }
     }
-    
+    // Вызывается при нажатии клавиши Return на клавиатуре
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Завершаем редактирование текстового поля
         textField.resignFirstResponder()
         return true
     }

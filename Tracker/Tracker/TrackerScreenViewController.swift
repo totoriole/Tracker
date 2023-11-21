@@ -9,13 +9,13 @@ import UIKit
 
 final class TrackerScreenViewController: UIViewController {
     
-    private var trackers: [Tracker] = []
-    private var categories: [TrackerCategory] = []
-    private var completedTrackers: [TrackerRecord] = []
-    private var visibleCategories: [TrackerCategory] = []
+    private var trackers: [Tracker] = [] // массив для хранения привычек
+    private var categories: [TrackerCategory] = [] // массив для категорий привычек
+    private var completedTrackers: [TrackerRecord] = [] // массив выполненых трекеоров
+    private var visibleCategories: [TrackerCategory] = [] // отображаемые категории
     
-    private var selectedDate: Int?
-    private var filterText: String?
+    private var selectedDate: Int? //для фильтрации трекеров в соответствии с выбранным пользователем днем недели.
+    private var filterText: String? // для определения, какие трекеры должны быть отображены в коллекции в соответствии с введенным пользователем запросом. Обновляется когда пользователь вводит текст в поле поиска
     
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
@@ -98,12 +98,12 @@ final class TrackerScreenViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .whitebackground
-        selectCurrentDay()
+        selectCurrentDay() // Выбор текущего дня и настройка отображения
         configureViews()
         configureConstraints()
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: pluseButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
-        let category = TrackerCategory(title: "Домашние дела", trackers: trackers) // тестовый пример
+        let category = TrackerCategory(title: "Домашние дела", trackers: trackers) // Тестовый пример - создание категории с трекерами
         categories.append(category)
         showFirstScreen()
         
@@ -154,16 +154,21 @@ final class TrackerScreenViewController: UIViewController {
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
     }
-    
+    // Обновление выбранного дня недели в соответствии с выбором пользователя
     private func selectCurrentDay() {
         let calendar = Calendar.current
+        // Определение номера текущего дня недели с помощью DatePicker
         let filterWeekday = calendar.component(.weekday, from: datePicker.date)
+        // Обновление выбранного дня недели
         self.selectedDate = filterWeekday
     }
     
+    // Фильтрация трекеров в соответствии с выбранным днем недели и текстом поиска
     private func filterTrackers() {
+        // Фильтрация и обновление отображаемых категорий и трекеров
         visibleCategories = categories.map { category in
             TrackerCategory(title: category.title, trackers: category.trackers.filter { tracker in
+                // Фильтрация по расписанию и названию трекера
                 let scheduleContains = tracker.schedule?.contains { day in
                     guard let currentDay = self.selectedDate else {
                         return true
@@ -174,6 +179,7 @@ final class TrackerScreenViewController: UIViewController {
                 return scheduleContains && titleContains
             })
         }
+        // Удаление пустых категорий и обновление экрана
         .filter { category in
             !category.trackers.isEmpty
         }
@@ -194,8 +200,10 @@ final class TrackerScreenViewController: UIViewController {
 }
 
 // MARK: - UITextFieldDelegate
+// Обработка изменения значения текстового поля поиска
 extension TrackerScreenViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
+        // Обновление текста для фильтрации и запуск фильтрации трекеров
         self.filterText = textField.text
         filterTrackers()
     }
@@ -206,21 +214,24 @@ extension TrackerScreenViewController: UITextFieldDelegate {
 }
 
 // MARK: - TrackersActions
+// Добавление нового трекера и обновление экрана
 extension TrackerScreenViewController: TrackersActions {
     func appendTracker(tracker: Tracker) {
-        self.trackers.append(tracker)
+        self.trackers.append(tracker) // Добавление трекера в массив
+        // Обновление массива категорий с учетом нового трекера
         self.categories = self.categories.map { category in
             var updatedTrackers = category.trackers
             updatedTrackers.append(tracker)
             return TrackerCategory(title: category.title, trackers: updatedTrackers)
         }
+        // Запуск фильтрации и обновление экрана
         filterTrackers()
     }
-    
+    // Обновление данных и перезагрузка коллекции
     func reload() {
         self.collectionView.reloadData()
     }
-    
+    // Отображение экран если нет от наличия трекеров
     func showFirstScreen() {
         if visibleCategories.isEmpty {
             collectionView.isHidden = true
@@ -233,6 +244,7 @@ extension TrackerScreenViewController: TrackersActions {
         }
     }
     
+    // Отображение экрана если есть видимые категории
     func showNextScreen() {
         if visibleCategories.isEmpty {
             collectionView.isHidden = true
@@ -252,10 +264,11 @@ extension TrackerScreenViewController: TrackersActions {
 
 // MARK: - UICollectionViewDataSource
 extension TrackerScreenViewController: UICollectionViewDataSource {
+    // Количество ячеек в секции
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return visibleCategories[section].trackers.count
     }
-    
+    // Создаем и настраиваем ячейки
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? TrackerCell else {
             return UICollectionViewCell()
@@ -271,15 +284,16 @@ extension TrackerScreenViewController: UICollectionViewDataSource {
         
         return cell
     }
-    
+    // Количество секций в коллекции
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return visibleCategories.count
     }
-    
+    // Создаем и настраиваем заголовок секции
     func collectionView(_ collectionView:UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HeaderSectionView.id, for: indexPath) as? HeaderSectionView else {
             return UICollectionReusableView()
         }
+        // Получаем текст заголовка из видимых категорий
         guard indexPath.section < visibleCategories.count else {
             return header
         }
@@ -287,13 +301,13 @@ extension TrackerScreenViewController: UICollectionViewDataSource {
         header.headerText = headerText
         return header
     }
-    
+    // Проверка, завершен ли трекер в текущий день
     private func isTrackerCompletedToday(id: UUID) -> Bool {
         completedTrackers.contains { trackerRecord in
             isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
         }
     }
-    
+    // Проверка, является ли запись трекера одинаковой
     private func isSameTrackerRecord(trackerRecord: TrackerRecord, id: UUID) -> Bool {
         let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
         return trackerRecord.id == id && isSameDay
@@ -303,40 +317,47 @@ extension TrackerScreenViewController: UICollectionViewDataSource {
 // MARK: - TrackerCellDelegate
 extension TrackerScreenViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
+        // Получение текущей даты и выбранной даты
         let currentDate = Date()
         let selectedDate = datePicker.date
         let calendar = Calendar.current
+        // Проверка, что выбранная дата не позднее текущей
         if calendar.compare(selectedDate, to: currentDate, toGranularity: .day) != .orderedDescending {
+            // Создание записи о завершении трекера и добавление в массив завершенных
             let trackerRecord = TrackerRecord(id: id, date: selectedDate)
             completedTrackers.append(trackerRecord)
+            // Обновление соответствующей ячейки в коллекции
             collectionView.reloadItems(at: [indexPath])
         } else {
-            return
+            return // Если выбранная дата позднее текущей, прерываем выполнение функции
         }
     }
-    
+    // Обработка отмены завершения трекера
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
+        // Удаление всех записей о завершении трекера с данным идентификатором
         completedTrackers.removeAll { trackerRecord in
             isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
         }
+        // Обновление соответствующей ячейки в коллекции
         collectionView.reloadItems(at: [indexPath])
     }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension TrackerScreenViewController: UICollectionViewDelegateFlowLayout {
+    // Расчет размера ячейки
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.width / 2 - 5, height: (collectionView.bounds.width / 2 - 5) * 0.88)
     }
-    
+    // Установка минимального интервала между ячейками в секции
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 9
     }
-    
+    // Установка минимального интервала между строками в секции
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-    
+    // Установка размера заголовка секции
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.bounds.width, height: 47)
     }

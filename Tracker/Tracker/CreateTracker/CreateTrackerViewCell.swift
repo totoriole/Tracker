@@ -48,6 +48,7 @@ final class CreateTrackerViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //Обновляем содержимое ячейки таблицы новыми данными. Принимаем строку title и устанавливаем ее в качестве текста метки titleLabel. Таким образом, при вызове этого метода с новым заголовком, ячейка обновит свое содержимое.
     func update(with title: String) {
         titleLabel.text = title
     }
