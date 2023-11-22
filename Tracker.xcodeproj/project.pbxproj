@@ -20,11 +20,11 @@
 		99F97C882AF4B8FD000811A7 /* StatisticScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99F97C872AF4B8FD000811A7 /* StatisticScreenViewController.swift */; };
 		BBE12D8D2B0D0A6E00C58555 /* AddTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE12D8C2B0D0A6E00C58555 /* AddTrackerViewController.swift */; };
 		BBF34FAF2B0DC5EB00E1A630 /* ImageButtonDone.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF34FAE2B0DC5EB00E1A630 /* ImageButtonDone.swift */; };
-		BBF4CF502B0D2BB100F2CCC0 /* CreateTrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF4F2B0D2BB100F2CCC0 /* CreateTrackerViewController.swift */; };
+		BBF4CF502B0D2BB100F2CCC0 /* HabitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF4F2B0D2BB100F2CCC0 /* HabitViewController.swift */; };
 		BBF4CF552B0D320400F2CCC0 /* IrregularEventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF542B0D320400F2CCC0 /* IrregularEventViewController.swift */; };
 		BBF4CF572B0D33CB00F2CCC0 /* IrregularEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF562B0D33CB00F2CCC0 /* IrregularEventCell.swift */; };
 		BBF4CF5A2B0D347700F2CCC0 /* ScheduleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF592B0D347700F2CCC0 /* ScheduleViewController.swift */; };
-		BBF4CF5C2B0D350900F2CCC0 /* CreateTrackerViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF5B2B0D350900F2CCC0 /* CreateTrackerViewCell.swift */; };
+		BBF4CF5C2B0D350900F2CCC0 /* HabitViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF5B2B0D350900F2CCC0 /* HabitViewCell.swift */; };
 		BBF4CF5F2B0D37FC00F2CCC0 /* HeaderSectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF5E2B0D37FC00F2CCC0 /* HeaderSectionView.swift */; };
 		BBF4CF612B0D75B800F2CCC0 /* ScheduleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBF4CF602B0D75B800F2CCC0 /* ScheduleCell.swift */; };
 /* End PBXBuildFile section */
@@ -45,11 +45,11 @@
 		99F97C872AF4B8FD000811A7 /* StatisticScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticScreenViewController.swift; sourceTree = "<group>"; };
 		BBE12D8C2B0D0A6E00C58555 /* AddTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTrackerViewController.swift; sourceTree = "<group>"; };
 		BBF34FAE2B0DC5EB00E1A630 /* ImageButtonDone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageButtonDone.swift; sourceTree = "<group>"; };
-		BBF4CF4F2B0D2BB100F2CCC0 /* CreateTrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewController.swift; sourceTree = "<group>"; };
+		BBF4CF4F2B0D2BB100F2CCC0 /* HabitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewController.swift; sourceTree = "<group>"; };
 		BBF4CF542B0D320400F2CCC0 /* IrregularEventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrregularEventViewController.swift; sourceTree = "<group>"; };
 		BBF4CF562B0D33CB00F2CCC0 /* IrregularEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrregularEventCell.swift; sourceTree = "<group>"; };
 		BBF4CF592B0D347700F2CCC0 /* ScheduleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleViewController.swift; sourceTree = "<group>"; };
-		BBF4CF5B2B0D350900F2CCC0 /* CreateTrackerViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTrackerViewCell.swift; sourceTree = "<group>"; };
+		BBF4CF5B2B0D350900F2CCC0 /* HabitViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabitViewCell.swift; sourceTree = "<group>"; };
 		BBF4CF5E2B0D37FC00F2CCC0 /* HeaderSectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderSectionView.swift; sourceTree = "<group>"; };
 		BBF4CF602B0D75B800F2CCC0 /* ScheduleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -118,7 +118,7 @@
 		99FA9ADA2AF4710400E6F3F7 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				BBF4CF5D2B0D353100F2CCC0 /* CreateTracker */,
+				BBF4CF5D2B0D353100F2CCC0 /* Habit */,
 				BBF4CF582B0D346200F2CCC0 /* Schedule */,
 				BBF4CF532B0D31F700F2CCC0 /* Event */,
 				994313812AEAF50100410757 /* TrackerScreenViewController.swift */,
@@ -148,13 +148,13 @@
 			path = Schedule;
 			sourceTree = "<group>";
 		};
-		BBF4CF5D2B0D353100F2CCC0 /* CreateTracker */ = {
+		BBF4CF5D2B0D353100F2CCC0 /* Habit */ = {
 			isa = PBXGroup;
 			children = (
-				BBF4CF4F2B0D2BB100F2CCC0 /* CreateTrackerViewController.swift */,
-				BBF4CF5B2B0D350900F2CCC0 /* CreateTrackerViewCell.swift */,
+				BBF4CF4F2B0D2BB100F2CCC0 /* HabitViewController.swift */,
+				BBF4CF5B2B0D350900F2CCC0 /* HabitViewCell.swift */,
 			);
-			path = CreateTracker;
+			path = Habit;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -235,11 +235,11 @@
 				BBF34FAF2B0DC5EB00E1A630 /* ImageButtonDone.swift in Sources */,
 				BBF4CF612B0D75B800F2CCC0 /* ScheduleCell.swift in Sources */,
 				BBF4CF5A2B0D347700F2CCC0 /* ScheduleViewController.swift in Sources */,
-				BBF4CF502B0D2BB100F2CCC0 /* CreateTrackerViewController.swift in Sources */,
+				BBF4CF502B0D2BB100F2CCC0 /* HabitViewController.swift in Sources */,
 				994313822AEAF50100410757 /* TrackerScreenViewController.swift in Sources */,
 				9943137E2AEAF50100410757 /* AppDelegate.swift in Sources */,
 				998EA8252AFDF1E90071E73A /* TrackerModels.swift in Sources */,
-				BBF4CF5C2B0D350900F2CCC0 /* CreateTrackerViewCell.swift in Sources */,
+				BBF4CF5C2B0D350900F2CCC0 /* HabitViewCell.swift in Sources */,
 				BBF4CF5F2B0D37FC00F2CCC0 /* HeaderSectionView.swift in Sources */,
 				994313802AEAF50100410757 /* SceneDelegate.swift in Sources */,
 				994313922AEB15B900410757 /* LaunchScreenTracker.swift in Sources */,

@@ -22,7 +22,7 @@ extension UIColor {
     static let defaultForeground = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0)
 
 
-    static let selection = [
+    static let selectionColors = [
         UIColor(named: "Color selection 1") ?? defaultForeground,
         UIColor(named: "Color selection 2") ?? defaultForeground,
         UIColor(named: "Color selection 3") ?? defaultForeground,
@@ -104,4 +104,8 @@ extension UICollectionView {
             self.paddingWidth = leftInset + rightInset + CGFloat(cellCount - 1) * cellSpacing
         }
     }
+}
+
+extension String {
+    static let selectionEmojies = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝", "😪"]
 }

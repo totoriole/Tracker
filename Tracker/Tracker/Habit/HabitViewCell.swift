@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class CreateTrackerViewCell: UITableViewCell {
+final class HabitViewCell: UITableViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 16, weight: .regular)

@@ -74,7 +74,7 @@ final class AddTrackerViewController: UIViewController {
     // Обработчик нажатия на кнопку "Привычка"
     @objc private func didTapHabitButton() {
         // Создание экземпляра контроллера для создания привычки
-        let addHabit = CreateTrackerViewController()
+        let addHabit = HabitViewController()
         // Передача ссылки на контроллер представления списка трекеров
         addHabit.trackersViewController = self.trackerScreenViewController
         // Отображение созданного контроллера

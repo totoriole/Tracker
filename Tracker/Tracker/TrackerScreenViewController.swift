@@ -103,10 +103,10 @@ final class TrackerScreenViewController: UIViewController {
         configureConstraints()
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: pluseButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
+        print("Before appending category: \(categories)")
         let category = TrackerCategory(title: "Домашние дела", trackers: trackers) // Тестовый пример - создание категории с трекерами
-
         categories.append(category)
-
+        print("After appending category: \(categories)")
         showFirstScreen()
         
         collectionView.dataSource = self

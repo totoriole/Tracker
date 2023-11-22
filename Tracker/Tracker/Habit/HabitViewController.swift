@@ -1,5 +1,5 @@
 //
-//  CreateTrackerViewController.swift
+//  HabitViewController.swift
 //  Tracker
 //
 //  Created by Bumbie on 21.11.2023.
@@ -14,13 +14,14 @@ protocol TrackersActions {
     func showFirstScreen()
 }
 
-final class CreateTrackerViewController: UIViewController {
+final class HabitViewController: UIViewController {
     
     var trackersViewController: TrackersActions? // представляет объект, соответствующий протоколу TrackersActions. Это позволяет взаимодействовать с другим контроллером, реализующим этот протокол.
     let cellReuseIdentifier = "CreateTrackersTableViewCell"
     
     private var selectedDays: [Weekday] = []
-    private let colors: [UIColor] = UIColor.selection
+    private let colors: [UIColor] = UIColor.selectionColors
+    private let emojies: [String] = String.selectionEmojies
     
     private let header: UILabel = {
         let header = UILabel()
@@ -102,7 +103,7 @@ final class CreateTrackerViewController: UIViewController {
         addTrackerName.delegate = self
         trackersTableView.delegate = self
         trackersTableView.dataSource = self
-        trackersTableView.register(CreateTrackerViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
+        trackersTableView.register(HabitViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
         trackersTableView.layer.cornerRadius = 16
         trackersTableView.separatorStyle = .none
     }
@@ -168,7 +169,7 @@ final class CreateTrackerViewController: UIViewController {
 }
 
 // MARK: - SelectedDays
-extension CreateTrackerViewController: SelectedDays {
+extension HabitViewController: SelectedDays {
     func save(indicies: [Int]) {
         // Реализация сохранения выбранных дней
         for index in indicies {
@@ -178,7 +179,7 @@ extension CreateTrackerViewController: SelectedDays {
 }
 
 // MARK: - UITableViewDelegate
-extension CreateTrackerViewController: UITableViewDelegate {
+extension HabitViewController: UITableViewDelegate {
     // Устанавливаем высоту ячейки в таблице
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
@@ -211,7 +212,7 @@ extension CreateTrackerViewController: UITableViewDelegate {
 }
 
 // MARK: - UITableViewDataSource
-extension CreateTrackerViewController: UITableViewDataSource {
+extension HabitViewController: UITableViewDataSource {
     // Количество ячеек в секции
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
@@ -219,7 +220,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
     // Возвращаем ячейку для определенного индекса
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Создаем и конфигурируем ячейку для таблицы
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as? CreateTrackerViewCell else { return UITableViewCell() }
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as? HabitViewCell else { return UITableViewCell() }
         // Обновляем содержимое ячейки в зависимости от индекса
         if indexPath.row == 0 {
             cell.update(with: "Категория")
@@ -231,7 +232,7 @@ extension CreateTrackerViewController: UITableViewDataSource {
 }
 
 // MARK: - UITextFieldDelegate
-extension CreateTrackerViewController: UITextFieldDelegate {
+extension HabitViewController: UITextFieldDelegate {
     // Вызывается при изменении текста в текстовом поле
     func textFieldDidChangeSelection(_ textField: UITextField) {
         // Скрываем или показываем кнопку очистки в зависимости от наличия текста в поле
