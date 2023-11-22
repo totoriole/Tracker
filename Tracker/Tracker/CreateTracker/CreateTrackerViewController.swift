@@ -54,7 +54,7 @@ final class CreateTrackerViewController: UIViewController {
         cancelButton.layer.cornerRadius = 16
         cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         cancelButton.setTitle("Отменить", for: .normal)
-        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         return cancelButton
     }()
@@ -70,7 +70,7 @@ final class CreateTrackerViewController: UIViewController {
         clearButton.setImage(UIImage(named: "cleanKeyboard"), for: .normal)
         clearButton.frame = CGRect(x: 0, y: 0, width: 17, height: 17)
         clearButton.contentMode = .scaleAspectFit
-        clearButton.addTarget(self, action: #selector(clearTextField), for: .touchUpInside)
+        clearButton.addTarget(self, action: #selector(didTapClean), for: .touchUpInside)
         clearButton.isHidden = true
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 29, height: 17))
         paddingView.addSubview(clearButton)
@@ -144,13 +144,13 @@ final class CreateTrackerViewController: UIViewController {
         ])
     }
 // MARK: - Обработчики действий кнопок
-    @objc private func clearTextField() {
+    @objc private func didTapClean() {
         // Действие для очистки текстового поля
         addTrackerName.text = ""
         clearButton.isHidden = true
     }
     
-    @objc private func cancelButtonTapped() {
+    @objc private func didTapCancelButton() {
         // Действие для закрытия контроллера представления
         dismiss(animated: true)
     }

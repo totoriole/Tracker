@@ -8,8 +8,8 @@
 import UIKit
 
 final class AddTrackerViewController: UIViewController {
-    
-    var trackersViewController: TrackerScreenViewController?
+    // Ссылка на контроллер представления списка трекеров
+    var trackerScreenViewController: TrackerScreenViewController?
     
     private lazy var textLabel: UILabel = {
         let header = UILabel()
@@ -71,12 +71,22 @@ final class AddTrackerViewController: UIViewController {
             irregularButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
-    
+    // Обработчик нажатия на кнопку "Привычка"
     @objc private func didTapHabitButton() {
-        
+        // Создание экземпляра контроллера для создания привычки
+        let addHabit = CreateTrackerViewController()
+        // Передача ссылки на контроллер представления списка трекеров
+        addHabit.trackersViewController = self.trackerScreenViewController
+        // Отображение созданного контроллера
+        present(addHabit, animated: true)
     }
-    
+    // Обработчик нажатия на кнопку "Нерегулярное событие"
     @objc private func didTapIrregularButton() {
-        
+        // Создание экземпляра контроллера для создания нерегулярного события
+        let addEvent = IrregularEventViewController()
+        // Передача ссылки на контроллер представления списка трекеров
+        addEvent.trackerScreenViewController = self.trackerScreenViewController
+        // Отображение созданного контроллера
+        present(addEvent, animated: true)
     }
 }

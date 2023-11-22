@@ -189,7 +189,7 @@ final class TrackerScreenViewController: UIViewController {
     
     @objc private func didTapPluseButton() {
         let addTracker = AddTrackerViewController()
-        addTracker.trackersViewController = self
+        addTracker.trackerScreenViewController = self
         present(addTracker, animated: true, completion: nil)
     }
     

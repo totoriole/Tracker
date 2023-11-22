@@ -15,6 +15,7 @@ extension UIColor {
     static let whiteday = UIColor(named: "White Day") ?? defaultForeground
     static let greyYP = UIColor(named: "Grey") ?? defaultForeground
     static let redtext = UIColor(named: "Red text") ?? defaultForeground
+    static let backgroundday = UIColor(named: "Background Day") ?? defaultBackground
     
     
     static let defaultBackground = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)

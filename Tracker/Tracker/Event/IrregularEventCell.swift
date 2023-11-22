@@ -32,7 +32,10 @@ final class IrregularEventCell: UITableViewCell {
         
         addSubview(titleLabel)
         addSubview(chevronImage)
-        
+        configureViews()
+    }
+    
+    private func configureViews() {
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),

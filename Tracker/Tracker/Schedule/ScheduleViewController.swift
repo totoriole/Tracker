@@ -6,13 +6,15 @@
 //
 
 import UIKit
-
+// Протокол для передачи выбранных дней
 protocol SelectedDays {
     func save(indicies: [Int])
 }
 
 final class ScheduleViewController: UIViewController {
+    // Идентификатор ячейки в расписании
     let scheduleCellReuseIdentifier = "ScheduleTableViewCell"
+    // Ссылка на объект делегата для передачи выбранных дней
     var createTrackerViewController: SelectedDays?
     
     private let textLabel: UILabel = {
@@ -48,7 +50,7 @@ final class ScheduleViewController: UIViewController {
         view.backgroundColor = .whiteday
         configureViews()
         configureConstraints()
-        
+        // Настройка таблицы расписания
         scheduleTableView.dataSource = self
         scheduleTableView.delegate = self
         scheduleTableView.register(ScheduleCell.self, forCellReuseIdentifier: scheduleCellReuseIdentifier)
@@ -80,9 +82,10 @@ final class ScheduleViewController: UIViewController {
             doneScheduleButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
-    
+    // Обработчик нажатия на кнопку "Готово"
     @objc private func didTapDoneScheduleButton() {
         var selected: [Int] = []
+        // Перебор видимых ячеек таблицы и сохранение индексов выбранных дней
         for (index, elem) in scheduleTableView.visibleCells.enumerated() {
             guard let cell = elem as? ScheduleCell else {
                 return
@@ -91,18 +94,22 @@ final class ScheduleViewController: UIViewController {
                 selected.append(index)
             }
         }
+        // Вызов метода делегата для передачи выбранных дней
         self.createTrackerViewController?.save(indicies: selected)
+        // Закрытие контроллера
         dismiss(animated: true)
     }
 }
 
 // MARK: - UITableViewDelegate
 extension ScheduleViewController: UITableViewDelegate {
+    // высота ячейки в таблице
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Настройка визуального отображения разделителя между ячейками
         let separatorInset: CGFloat = 16
         let separatorWidth = tableView.bounds.width - separatorInset * 2
         let separatorHeight: CGFloat = 1.0
@@ -111,22 +118,25 @@ extension ScheduleViewController: UITableViewDelegate {
         
         let separatorView = UIView(frame: CGRect(x: separatorX, y: separatorY, width: separatorWidth, height: separatorHeight))
         separatorView.backgroundColor = .greyYP
-        
-        cell.addSubview(separatorView)
+        // Добавление разделителя к ячейке
+//        cell.addSubview(separatorView)
     }
-    
+    // Метод, вызываемый при выборе ячейки
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Снимает выделение с ячейки после нажатия
         scheduleTableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
 // MARK: - UITableViewDataSource
 extension ScheduleViewController: UITableViewDataSource {
+    // количество ячеек в таблице
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 7
     }
-    
+    // Метод для настройки содержимого ячейки
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        // Получение ячейки из пула переиспользуемых ячеек
         guard let cell = tableView.dequeueReusableCell(withIdentifier: scheduleCellReuseIdentifier, for: indexPath) as? ScheduleCell else { return UITableViewCell() }
         
         return cell

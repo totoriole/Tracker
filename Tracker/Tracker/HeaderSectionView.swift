@@ -8,7 +8,9 @@
 import UIKit
 
 final class HeaderSectionView: UICollectionReusableView {
+    // Статический идентификатор, используемый для регистрации и восстановления представления
     static let id = "header"
+    // Переменная для установки текста заголовка, с использованием наблюдателя didSet
     var headerText: String? {
         didSet {
             titleLabel.text = headerText
@@ -22,7 +24,7 @@ final class HeaderSectionView: UICollectionReusableView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+    // Конструктор
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubview(titleLabel)
@@ -32,7 +34,7 @@ final class HeaderSectionView: UICollectionReusableView {
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12)
         ])
     }
-    
+    // Обязательный метод инициализации для случаев, когда представление создается из интерфейса Builder (Storyboard, XIB и др.)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

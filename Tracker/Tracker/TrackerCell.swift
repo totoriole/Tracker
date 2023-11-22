@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+// Протокол делегата для обработки действий с ячейкой трекера
 protocol TrackerCellDelegate: AnyObject {
     func completeTracker(id: UUID, at indexPath: IndexPath)
     func uncompleteTracker(id: UUID, at indexPath: IndexPath)
@@ -16,6 +16,7 @@ final class TrackerCell: UICollectionViewCell {
     
     // Идентификатор ячейки — используется для регистрации и восстановления:
     static var reuseId = "cell"
+    // Слабая ссылка на делегата
     weak var delegate: TrackerCellDelegate?
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
@@ -77,17 +78,18 @@ final class TrackerCell: UICollectionViewCell {
     // Конструктор:
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+        // Настройка внешнего вида ячейки
         contentView.layer.cornerRadius = 16
         contentView.layer.masksToBounds = true
+        // Настройка элементов интерфейса
         configureViews()
         configureConstraints()
     }
-    
+    // Метод, вызываемый при инициализации из интерфейса Builder (Storyboard, XIB и др.)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    // Метод для настройки содержимого ячейки на основе переданных данных
     func configure(tracker: Tracker, isCompletedToday: Bool, completedDays: Int, indexPath: IndexPath) {
         self.isCompletedToday = isCompletedToday
         self.indexPath = indexPath
@@ -122,7 +124,7 @@ final class TrackerCell: UICollectionViewCell {
             trackerEmoji.centerYAnchor.constraint(equalTo: emojiBackground.centerYAnchor),
         ])
     }
-    
+    // Приватный метод для форматирования строки с количеством завершенных дней в соответствии с русской грамматикой
     private func formatCompletedDays(_ completedDays: Int) -> String {
         let lastDigit = completedDays % 10
         let lastTwoDigits = completedDays % 100
@@ -139,7 +141,7 @@ final class TrackerCell: UICollectionViewCell {
             return "\(completedDays) дней"
         }
     }
-    
+    // Обработчик нажатия на кнопку завершения трекера
     @objc private func didTapCompletedTrackerButton() {
         guard let trackerId = trackerId, let indexPath = indexPath else {
             assertionFailure("no trackerId")
