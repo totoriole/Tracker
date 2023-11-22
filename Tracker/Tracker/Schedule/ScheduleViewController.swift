@@ -138,6 +138,10 @@ extension ScheduleViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Получение ячейки из пула переиспользуемых ячеек
         guard let cell = tableView.dequeueReusableCell(withIdentifier: scheduleCellReuseIdentifier, for: indexPath) as? ScheduleCell else { return UITableViewCell() }
+        // Получение дня недели для текущей строки
+        let dayOfWeek = Weekday.allCases[indexPath.row]
+        // Обновление содержимого ячейки с информацией о дне недели
+        cell.update(with: "\(dayOfWeek.name)")
         
         return cell
     }

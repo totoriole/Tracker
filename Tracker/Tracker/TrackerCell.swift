@@ -99,7 +99,8 @@ final class TrackerCell: UICollectionViewCell {
         trackerEmoji.text = tracker.emoji
         trackersDaysAmount.text = formatCompletedDays(completedDays)
         
-        let image = isCompletedToday ? (UIImage(named: "Done")?.withTintColor(trackerCard.backgroundColor ?? .whiteday)) : (UIImage(named: "Plus")?.withTintColor(trackerCard.backgroundColor ?? .whiteday))
+        // Установка иконки на кнопке completedTrackerButton в зависимости от того, был ли трекер завершен в текущий день (isCompletedToday).
+        let image = isCompletedToday ? (UIImage(named: "imageCreate")?.withTintColor(trackerCard.backgroundColor ?? .whiteday)) : (UIImage(named: "Pluse")?.withTintColor(trackerCard.backgroundColor ?? .whiteday))
         completedTrackerButton.setImage(image, for: .normal)
     }
     
