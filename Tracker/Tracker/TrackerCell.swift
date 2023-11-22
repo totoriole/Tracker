@@ -100,7 +100,7 @@ final class TrackerCell: UICollectionViewCell {
         trackersDaysAmount.text = formatCompletedDays(completedDays)
         
         // Установка иконки на кнопке completedTrackerButton в зависимости от того, был ли трекер завершен в текущий день (isCompletedToday).
-        let image = isCompletedToday ? (UIImage(named: "imageCreate")?.withTintColor(trackerCard.backgroundColor ?? .whiteday)) : (UIImage(named: "Pluse")?.withTintColor(trackerCard.backgroundColor ?? .whiteday))
+        let image = isCompletedToday ? (UIImage(named: "Done")?.withTintColor(trackerCard.backgroundColor ?? .whiteday)) : (UIImage(named: "Pluse")?.withTintColor(trackerCard.backgroundColor ?? .whiteday))
         completedTrackerButton.setImage(image, for: .normal)
     }
     
