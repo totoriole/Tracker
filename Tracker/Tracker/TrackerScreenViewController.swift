@@ -104,7 +104,9 @@ final class TrackerScreenViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: pluseButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         let category = TrackerCategory(title: "Домашние дела", trackers: trackers) // Тестовый пример - создание категории с трекерами
+
         categories.append(category)
+
         showFirstScreen()
         
         collectionView.dataSource = self
