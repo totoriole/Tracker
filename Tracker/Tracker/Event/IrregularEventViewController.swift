@@ -13,7 +13,7 @@ final class IrregularEventViewController: UIViewController {
     // Ссылка на объект делегата для передачи данных о созданном трекере
     var trackerScreenViewController: TrackersActions?
     // Массив цветов для нерегулярных событий
-    private let colors: [UIColor] = UIColor.selection
+    private let colors: [UIColor] = UIColor.selectionColors
     
     private let label: UILabel = {
         let label = UILabel()

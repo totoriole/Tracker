@@ -36,7 +36,7 @@ final class HabitViewController: UIViewController {
         let addTrackerName = UITextField()
         addTrackerName.translatesAutoresizingMaskIntoConstraints = false
         addTrackerName.placeholder = "Введите название трекера"
-        addTrackerName.backgroundColor = .whiteBackground
+        addTrackerName.backgroundColor = .backgroundday
         addTrackerName.layer.cornerRadius = 16
         let leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         addTrackerName.leftView = leftView

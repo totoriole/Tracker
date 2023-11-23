@@ -119,7 +119,7 @@ extension ScheduleViewController: UITableViewDelegate {
         let separatorView = UIView(frame: CGRect(x: separatorX, y: separatorY, width: separatorWidth, height: separatorHeight))
         separatorView.backgroundColor = .greyYP
         // Добавление разделителя к ячейке
-//        cell.addSubview(separatorView)
+        cell.addSubview(separatorView)
     }
     // Метод, вызываемый при выборе ячейки
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

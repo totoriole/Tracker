@@ -26,7 +26,7 @@ final class HabitViewCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        backgroundColor = .whitebackground
+        backgroundColor = .backgroundday
         clipsToBounds = true
         addSubview(titleLabel)
         addSubview(chevronImage)
@@ -53,4 +53,3 @@ final class HabitViewCell: UITableViewCell {
         titleLabel.text = title
     }
 }
-

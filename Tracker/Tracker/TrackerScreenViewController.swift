@@ -13,6 +13,7 @@ final class TrackerScreenViewController: UIViewController {
     private var categories: [TrackerCategory] = [] // массив для категорий привычек
     private var completedTrackers: [TrackerRecord] = [] // массив выполненых трекеоров
     private var visibleCategories: [TrackerCategory] = [] // отображаемые категории
+    private var currentDate = Date()
     
     private var selectedDate: Int? //для фильтрации трекеров в соответствии с выбранным пользователем днем недели.
     private var filterText: String? // для определения, какие трекеры должны быть отображены в коллекции в соответствии с введенным пользователем запросом. Обновляется когда пользователь вводит текст в поле поиска
@@ -186,6 +187,7 @@ final class TrackerScreenViewController: UIViewController {
             !category.trackers.isEmpty
         }
         showNextScreen()
+        
         collectionView.reloadData()
     }
     
@@ -209,7 +211,7 @@ extension TrackerScreenViewController: UITextFieldDelegate {
         self.filterText = textField.text
         filterTrackers()
     }
-    
+    // для скрытия клавиатуры после ввода текста в текстовом поле
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         return true
     }
@@ -233,7 +235,7 @@ extension TrackerScreenViewController: TrackersActions {
     func reload() {
         self.collectionView.reloadData()
     }
-    // Отображение экран если нет от наличия трекеров
+    // Отображение экрана если нет наличия трекеров
     func showFirstScreen() {
         if visibleCategories.isEmpty {
             collectionView.isHidden = true
@@ -241,8 +243,8 @@ extension TrackerScreenViewController: TrackersActions {
             plugLabel.isHidden = true
         } else {
             collectionView.isHidden = false
-            plugTrackerImage.isHidden = false
-            plugLabel.isHidden = false
+            initialTrackerImage.isHidden = false
+            initialLabel.isHidden = false
         }
     }
     
@@ -320,7 +322,7 @@ extension TrackerScreenViewController: UICollectionViewDataSource {
 extension TrackerScreenViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         // Получение текущей даты и выбранной даты
-        let currentDate = Date()
+//        let currentDate = Date()
         let selectedDate = datePicker.date
         let calendar = Calendar.current
         // Проверка, что выбранная дата не позднее текущей
