@@ -215,6 +215,9 @@ extension TrackerScreenViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         return true
     }
+    func searchTextFieldDidEndEditing(_ searchTextField: UISearchTextField) {
+        // Код, который должен выполниться при отмене поиска
+    }
 }
 
 // MARK: - TrackersActions
@@ -237,31 +240,31 @@ extension TrackerScreenViewController: TrackersActions {
     }
     // Отображение экрана если нет наличия трекеров
     func showFirstScreen() {
-        if visibleCategories.isEmpty {
-            collectionView.isHidden = true
-            plugTrackerImage.isHidden = true
-            plugLabel.isHidden = true
-        } else {
-            collectionView.isHidden = false
-            initialTrackerImage.isHidden = false
-            initialLabel.isHidden = false
-        }
+        let emptyVisibleCategories = visibleCategories.isEmpty
+        collectionView.isHidden = emptyVisibleCategories
+        plugTrackerImage.isHidden = emptyVisibleCategories
+        plugLabel.isHidden = emptyVisibleCategories
     }
     
     // Отображение экрана если есть видимые категории
     func showNextScreen() {
-        if visibleCategories.isEmpty {
+        if searchTracker.hasText && visibleCategories.isEmpty {
             collectionView.isHidden = true
-            initialTrackerImage.isHidden = true
-            initialLabel.isHidden = true
-            plugTrackerImage.isHidden = false
             plugLabel.isHidden = false
-        } else {
-            collectionView.isHidden = false
-            initialTrackerImage.isHidden = false
-            initialLabel.isHidden = false
+            plugTrackerImage.isHidden = false
+            initialLabel.isHidden = true
+            initialTrackerImage.isHidden = true
+        } else if visibleCategories.isEmpty {
             plugTrackerImage.isHidden = true
             plugLabel.isHidden = true
+            initialLabel.isHidden = false
+            initialTrackerImage.isHidden = false
+        } else {
+            collectionView.isHidden = false
+            plugLabel.isHidden = false
+            plugTrackerImage.isHidden = false
+            initialLabel.isHidden = false
+            initialTrackerImage.isHidden = false
         }
     }
 }
@@ -322,7 +325,6 @@ extension TrackerScreenViewController: UICollectionViewDataSource {
 extension TrackerScreenViewController: TrackerCellDelegate {
     func completeTracker(id: UUID, at indexPath: IndexPath) {
         // Получение текущей даты и выбранной даты
-//        let currentDate = Date()
         let selectedDate = datePicker.date
         let calendar = Calendar.current
         // Проверка, что выбранная дата не позднее текущей

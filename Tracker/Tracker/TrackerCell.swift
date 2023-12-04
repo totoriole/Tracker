@@ -50,11 +50,17 @@ final class TrackerCell: UICollectionViewCell {
         return trackerCard
     }()
     
+    private let plusButtonImage:UIImage = {
+        let image = UIImage(systemName: "plus")!
+        return image
+    }()
+    
     private lazy var completedTrackerButton: UIButton = {
         let completedTrackerButton = UIButton(type: .custom)
-        completedTrackerButton.frame = CGRect(x: 100, y: 100, width: 34, height: 34)
-        completedTrackerButton.translatesAutoresizingMaskIntoConstraints = false
+        completedTrackerButton.layer.cornerRadius = 17
+        completedTrackerButton.tintColor = .whiteday
         completedTrackerButton.addTarget(self, action: #selector(didTapCompletedTrackerButton), for: .touchUpInside)
+        completedTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         return completedTrackerButton
     }()
     
@@ -98,9 +104,12 @@ final class TrackerCell: UICollectionViewCell {
         trackerDescription.text = tracker.title
         trackerEmoji.text = tracker.emoji
         trackersDaysAmount.text = formatCompletedDays(completedDays)
-        
+        completedTrackerButton.backgroundColor = trackerCard.backgroundColor
+        // установка прозрачности иконки в зависимости от того, был ли трекер завершен в текущий день (isCompletedToday).
+        let plusButtonOpacity: Float = isCompletedToday ? 0.3 : 1
+        completedTrackerButton.layer.opacity = plusButtonOpacity
         // Установка иконки на кнопке completedTrackerButton в зависимости от того, был ли трекер завершен в текущий день (isCompletedToday).
-        let image = isCompletedToday ? (UIImage(named: "Done")?.withTintColor(trackerCard.backgroundColor ?? .whiteday)) : (UIImage(named: "Pluse")?.withTintColor(trackerCard.backgroundColor ?? .whiteday))
+        let image = isCompletedToday ? (UIImage(named: "Done")) : plusButtonImage
         completedTrackerButton.setImage(image, for: .normal)
     }
     
@@ -121,8 +130,10 @@ final class TrackerCell: UICollectionViewCell {
             trackerDescription.bottomAnchor.constraint(equalTo: trackerCard.bottomAnchor, constant: -12),
             completedTrackerButton.centerYAnchor.constraint(equalTo: trackersDaysAmount.centerYAnchor),
             completedTrackerButton.trailingAnchor.constraint(equalTo: trackerCard.trailingAnchor, constant: -12),
+            completedTrackerButton.widthAnchor.constraint(equalToConstant: 34),
+            completedTrackerButton.heightAnchor.constraint(equalToConstant: 34),
             trackerEmoji.centerXAnchor.constraint(equalTo: emojiBackground.centerXAnchor),
-            trackerEmoji.centerYAnchor.constraint(equalTo: emojiBackground.centerYAnchor),
+            trackerEmoji.centerYAnchor.constraint(equalTo: emojiBackground.centerYAnchor)
         ])
     }
     // Приватный метод для форматирования строки с количеством завершенных дней в соответствии с русской грамматикой
