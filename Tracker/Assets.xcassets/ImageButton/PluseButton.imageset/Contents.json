@@ -1,0 +1,44 @@
+{
+  "images" : [
+    {
+      "alignment-insets" : {
+        "bottom" : 0,
+        "left" : 0,
+        "right" : 0,
+        "top" : 30
+      },
+      "filename" : "Add tracker.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "alignment-insets" : {
+        "bottom" : 0,
+        "left" : 0,
+        "right" : 0,
+        "top" : 30
+      },
+      "filename" : "Add tracker@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "alignment-insets" : {
+        "bottom" : 0,
+        "left" : 0,
+        "right" : 0,
+        "top" : 30
+      },
+      "filename" : "Add tracker@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "localizable" : true
+  }
+}
