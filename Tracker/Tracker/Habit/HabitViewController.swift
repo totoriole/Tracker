@@ -22,6 +22,8 @@ final class HabitViewController: UIViewController {
     private var selectedDays: [Weekday] = []
     private let colors: [UIColor] = UIColor.selectionColors
     private let emojies: [String] = String.selectionEmojies
+    private var selectedColor: UIColor?
+    private var selectedEmoji: String?
     
     private let header: UILabel = {
         let header = UILabel()
