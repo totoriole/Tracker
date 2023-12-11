@@ -255,16 +255,17 @@ extension TrackerScreenViewController: TrackersActions {
             initialLabel.isHidden = true
             initialTrackerImage.isHidden = true
         } else if visibleCategories.isEmpty {
+            collectionView.isHidden = true
             plugTrackerImage.isHidden = true
             plugLabel.isHidden = true
             initialLabel.isHidden = false
             initialTrackerImage.isHidden = false
         } else {
             collectionView.isHidden = false
-            plugLabel.isHidden = false
-            plugTrackerImage.isHidden = false
-            initialLabel.isHidden = false
-            initialTrackerImage.isHidden = false
+            plugLabel.isHidden = true
+            plugTrackerImage.isHidden = true
+            initialLabel.isHidden = true
+            initialTrackerImage.isHidden = true
         }
     }
 }
