@@ -8,7 +8,7 @@
 import UIKit
 
 final class EmojiViewCell: UICollectionViewCell {
-    static var reuseID = "EmogiCell"
+    static var reuseID = "EmojiCell"
     
     let emojiLabel: UILabel = {
         let label = UILabel()
