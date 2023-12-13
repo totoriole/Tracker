@@ -183,7 +183,7 @@ final class HabitViewController: UIViewController {
             cancelButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             cancelButton.trailingAnchor.constraint(equalTo: colorCollectionView.centerXAnchor, constant: -4),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            createButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -34),
+            createButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 0),
             createButton.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
             createButton.heightAnchor.constraint(equalToConstant: 60),
             createButton.leadingAnchor.constraint(equalTo: colorCollectionView.centerXAnchor, constant: 4)
@@ -301,6 +301,7 @@ extension HabitViewController: UITextFieldDelegate {
 
 // MARK: - UICollectionViewDataSource
 extension HabitViewController: UICollectionViewDataSource {
+//    количество элементов (ячеек) в секции.
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 18
     }
@@ -355,7 +356,7 @@ extension HabitViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let collectionViewWidth = collectionView.bounds.width-36
         let cellWidth = collectionViewWidth/6
-        return CGSize(width: collectionViewWidth, height: cellWidth)
+        return CGSize(width: cellWidth, height: cellWidth)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
