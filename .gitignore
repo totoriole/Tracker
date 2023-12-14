@@ -85,3 +85,8 @@ iOSInjectionProject/
 
 # End of https://www.toptal.com/developers/gitignore/api/swift
 Tracker.xcodeproj/project.xcworkspace/xcuserdata/bumbie.xcuserdatad/UserInterfaceState.xcuserstate
+
+xcuserdata
+xcuserdata/*
+*.xcuserstate
+
