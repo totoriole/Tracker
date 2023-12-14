@@ -306,7 +306,9 @@ extension HabitViewController: UICollectionViewDataSource {
         return 18
     }
     
+//    настраиваем ячейку для отображения эмодзи или цвета
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // Создаем и настраиваем ячейки для emoji
         if collectionView == emojiCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmojiCell", for: indexPath) as? EmojiViewCell else {
                 return UICollectionViewCell()
@@ -318,6 +320,7 @@ extension HabitViewController: UICollectionViewDataSource {
             cell.layer.cornerRadius = 16
             
             return cell
+            // Создаем и настраиваем ячейки для цвета
         } else if collectionView == colorCollectionView {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ColorCell", for: indexPath) as? ColorViewCell else {
                 return UICollectionViewCell()
@@ -334,12 +337,14 @@ extension HabitViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        // Создаем и настраиваем заголовок для emoji
         if collectionView == emojiCollectionView {
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: EmojiHeader.id, for: indexPath) as? EmojiHeader else {
                 return UICollectionReusableView()
             }
             header.headerText = "Emoji"
             return header
+        // Создаем и настраиваем заголовок для цвета
         } else if collectionView == colorCollectionView {
             guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ColorHeader.id, for: indexPath) as? ColorHeader else {
                 return UICollectionReusableView()
@@ -353,24 +358,26 @@ extension HabitViewController: UICollectionViewDataSource {
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension HabitViewController: UICollectionViewDelegateFlowLayout {
+//    размер каждой ячейки в коллекции
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let collectionViewWidth = collectionView.bounds.width-36
+//        для создания шести ячеек в строке
         let cellWidth = collectionViewWidth/6
         return CGSize(width: cellWidth, height: cellWidth)
     }
-    
+//    минимальный интервал между ячейками внутри одной строки
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 5
     }
-    
+//    минимальный интервал между строками коллекции
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
-    
+//    размер заголовка секции
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.bounds.width, height: 18)
     }
-    
+//    внутренние отступы для секции коллекции, устанавливаем только верхний отступ
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
     }
@@ -378,13 +385,15 @@ extension HabitViewController: UICollectionViewDelegateFlowLayout {
 
 // MARK: - UICollectionViewDelegate
 extension HabitViewController: UICollectionViewDelegate {
+//    Этот метод вызывается, когда пользователь выбирает элемент в коллекции
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {
+            // Обработка выбора в emojiCollectionView
             let cell = collectionView.cellForItem(at: indexPath) as? EmojiViewCell
             cell?.backgroundColor = .backgroundday
-            
             selectedEmoji = cell?.emojiLabel.text
         } else if collectionView == colorCollectionView {
+            // Обработка выбора в colorCollectionView
             let cell = collectionView.cellForItem(at: indexPath) as? ColorViewCell
             cell?.layer.borderWidth = 3
             cell?.layer.borderColor = cell?.colorView.backgroundColor?.withAlphaComponent(0.3).cgColor
@@ -392,11 +401,14 @@ extension HabitViewController: UICollectionViewDelegate {
         }
     }
     
+//    Этот метод вызывается, когда пользователь снимает выбор с элемента в коллекции
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {
+            // Обработка снятия выбора в emojiCollectionView
             let cell = collectionView.cellForItem(at: indexPath) as? EmojiViewCell
             cell?.backgroundColor = .whitebackground
         } else if collectionView == colorCollectionView {
+            // Обработка снятия выбора в colorCollectionView
             let cell = collectionView.cellForItem(at: indexPath) as? ColorViewCell
             cell?.layer.borderWidth = 0
         }
