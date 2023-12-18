@@ -284,9 +284,9 @@ extension TrackerScreenViewController: UICollectionViewDataSource {
         cell.prepareForReuse()
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
         cell.delegate = self
-        let isCompletedToday = isTrackerCompletedToday(id: tracker.id)
+        let isCompletedToday = isTrackerCompletedToday(id: tracker.trackerID)
         let completedDays = completedTrackers.filter {
-            $0.id == tracker.id
+            $0.trackerRecordID == tracker.trackerID
         }.count
         cell.configure(tracker: tracker, isCompletedToday: isCompletedToday, completedDays: completedDays, indexPath: indexPath)
         
@@ -318,7 +318,7 @@ extension TrackerScreenViewController: UICollectionViewDataSource {
     // Проверка, является ли запись трекера одинаковой
     private func isSameTrackerRecord(trackerRecord: TrackerRecord, id: UUID) -> Bool {
         let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
-        return trackerRecord.id == id && isSameDay
+        return trackerRecord.trackerRecordID == id && isSameDay
     }
 }
 
@@ -331,7 +331,7 @@ extension TrackerScreenViewController: TrackerCellDelegate {
         // Проверка, что выбранная дата не позднее текущей
         if calendar.compare(selectedDate, to: currentDate, toGranularity: .day) != .orderedDescending {
             // Создание записи о завершении трекера и добавление в массив завершенных
-            let trackerRecord = TrackerRecord(id: id, date: selectedDate)
+            let trackerRecord = TrackerRecord(trackerRecordID: id, date: selectedDate)
             completedTrackers.append(trackerRecord)
             // Обновление соответствующей ячейки в коллекции
             collectionView.reloadItems(at: [indexPath])
