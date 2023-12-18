@@ -19,6 +19,9 @@
 		99F97C852AF4B01E000811A7 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99F97C842AF4B01E000811A7 /* TabBarController.swift */; };
 		99F97C882AF4B8FD000811A7 /* StatisticScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99F97C872AF4B8FD000811A7 /* StatisticScreenViewController.swift */; };
 		BB4D42E72B2BBE3D00CABBEE /* TrackerDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42E52B2BBE3D00CABBEE /* TrackerDataModel.xcdatamodeld */; };
+		BB4D42F32B30CD7B00CABBEE /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F22B30CD7B00CABBEE /* TrackerStore.swift */; };
+		BB4D42F82B30CDD900CABBEE /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */; };
+		BB4D42FA2B30CE0500CABBEE /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F92B30CE0500CABBEE /* TrackerRecordStore.swift */; };
 		BB6C2E192B0F19EA00063F99 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6C2E182B0F19EA00063F99 /* Date+Extension.swift */; };
 		BB6C2E1B2B0F1A3000063F99 /* EmojiString+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6C2E1A2B0F1A3000063F99 /* EmojiString+Extension.swift */; };
 		BB94802A2B277CE30064278C /* ColorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9480292B277CE30064278C /* ColorViewCell.swift */; };
@@ -51,6 +54,9 @@
 		99F97C842AF4B01E000811A7 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		99F97C872AF4B8FD000811A7 /* StatisticScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticScreenViewController.swift; sourceTree = "<group>"; };
 		BB4D42E62B2BBE3D00CABBEE /* TrackerDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TrackerDataModel.xcdatamodel; sourceTree = "<group>"; };
+		BB4D42F22B30CD7B00CABBEE /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
+		BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
+		BB4D42F92B30CE0500CABBEE /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
 		BB6C2E182B0F19EA00063F99 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		BB6C2E1A2B0F1A3000063F99 /* EmojiString+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EmojiString+Extension.swift"; sourceTree = "<group>"; };
 		BB9480292B277CE30064278C /* ColorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewCell.swift; sourceTree = "<group>"; };
@@ -135,6 +141,7 @@
 		99FA9ADA2AF4710400E6F3F7 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				BB4D42F12B30CD5E00CABBEE /* Store */,
 				BBF4CF5D2B0D353100F2CCC0 /* Habit */,
 				BBF4CF582B0D346200F2CCC0 /* Schedule */,
 				BBF4CF532B0D31F700F2CCC0 /* Event */,
@@ -145,6 +152,16 @@
 				BBF4CF5E2B0D37FC00F2CCC0 /* HeaderSectionView.swift */,
 			);
 			path = Tracker;
+			sourceTree = "<group>";
+		};
+		BB4D42F12B30CD5E00CABBEE /* Store */ = {
+			isa = PBXGroup;
+			children = (
+				BB4D42F22B30CD7B00CABBEE /* TrackerStore.swift */,
+				BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */,
+				BB4D42F92B30CE0500CABBEE /* TrackerRecordStore.swift */,
+			);
+			path = Store;
 			sourceTree = "<group>";
 		};
 		BBF4CF532B0D31F700F2CCC0 /* Event */ = {
@@ -262,6 +279,7 @@
 				BBF4CF502B0D2BB100F2CCC0 /* HabitViewController.swift in Sources */,
 				994313822AEAF50100410757 /* TrackerScreenViewController.swift in Sources */,
 				9943137E2AEAF50100410757 /* AppDelegate.swift in Sources */,
+				BB4D42F82B30CDD900CABBEE /* TrackerCategoryStore.swift in Sources */,
 				998EA8252AFDF1E90071E73A /* TrackerModels.swift in Sources */,
 				BB6C2E192B0F19EA00063F99 /* Date+Extension.swift in Sources */,
 				BB94802A2B277CE30064278C /* ColorViewCell.swift in Sources */,
@@ -270,8 +288,10 @@
 				BBA63F2A2B23A3350043886F /* EmojiViewCell.swift in Sources */,
 				994313802AEAF50100410757 /* SceneDelegate.swift in Sources */,
 				994313922AEB15B900410757 /* LaunchScreenTracker.swift in Sources */,
+				BB4D42FA2B30CE0500CABBEE /* TrackerRecordStore.swift in Sources */,
 				BBF4CF552B0D320400F2CCC0 /* IrregularEventViewController.swift in Sources */,
 				BBF4CF572B0D33CB00F2CCC0 /* IrregularEventCell.swift in Sources */,
+				BB4D42F32B30CD7B00CABBEE /* TrackerStore.swift in Sources */,
 				BB4D42E72B2BBE3D00CABBEE /* TrackerDataModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
