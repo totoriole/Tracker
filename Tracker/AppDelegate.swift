@@ -50,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // MARK: - Core Data Saving support
     func saveContext() {
-        if context.hasChanges {
+        if context.hasChanges { // Проверяем если у контекста какие-то изменения 
             do {
                 try context.save()
             } catch {
