@@ -25,7 +25,7 @@ final class TrackerStore: NSObject {
     var trackers: [Tracker] {
         guard
             let objects = self.fetchedResultsController.fetchedObjects,
-            let trackers = try? objects.map({ try self.tracker(from: $0)})
+            let trackers: [Tracker] = try? objects.map({ try self.tracker(from: $0) })
         else { return [] }
         return trackers
     }
@@ -55,12 +55,19 @@ final class TrackerStore: NSObject {
     }
     // Метод для добавления нового объекта Tracker в хранилище
     func addNewTracker(_ tracker: Tracker) throws {
+//        let trackerCoreData = TrackerCoreData(context: context)
+//        trackerCoreData.trackerID = tracker.trackerID
+//        trackerCoreData.title = tracker.title
+        //        trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
+        //        trackerCoreData.emoji = tracker.emoji
+        //        trackerCoreData.schedule = tracker.schedule?.compactMap{ $0.rawValue}
+        //        try context.save()
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.trackerID = tracker.trackerID
         trackerCoreData.title = tracker.title
-        trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
         trackerCoreData.emoji = tracker.emoji
-        trackerCoreData.schedule = tracker.schedule?.map { $0.rawValue }
+        trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
+        trackerCoreData.schedule = Weekday.code(tracker.schedule)
         try context.save()
     }
     // Метод для преобразования объекта TrackerCoreData в объект Tracker

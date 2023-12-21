@@ -44,18 +44,18 @@ enum Weekday: Int, CaseIterable {
             return "Воскресенье"
         }
     }
-}
-
-extension Weekday: Comparable {
-    static func < (lhs: Weekday, rhs: Weekday) -> Bool {
-        guard
-            let first = Self.allCases.firstIndex(of: lhs),
-            let second = Self.allCases.firstIndex(of: rhs)
-        else {
-            return false
+    //MARK: - Comparator
+        
+        static func < (lhs: Weekday, rhs: Weekday) -> Bool {
+            guard
+                let first = Self.allCases.firstIndex(of: lhs),
+                let second = Self.allCases.firstIndex(of: rhs)
+            else {
+                return false
+            }
+            
+            return first < second
         }
-        return first < second
-    }
 }
 
 struct TrackerCategory {
@@ -67,4 +67,3 @@ struct TrackerRecord {
     let trackerRecordID: UUID
     let date: Date
 }
-
