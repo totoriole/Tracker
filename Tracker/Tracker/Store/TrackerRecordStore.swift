@@ -84,6 +84,8 @@ final class TrackerRecordStore: NSObject {
         return result.first
     }
 }
+
+// MARK: - NSFetchedResultsControllerDelegate
 // Расширение для реализации методов делегата NSFetchedResultsController
 extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
     // Метод, вызываемый при изменении содержимого контроллера

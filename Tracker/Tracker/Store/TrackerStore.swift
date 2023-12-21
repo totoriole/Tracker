@@ -40,7 +40,7 @@ final class TrackerStore: NSObject {
         super.init()
         // Настройка запроса для получения объектов TrackerCoreData
         let fetch = TrackerCoreData.fetchRequest()
-        fetch.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerCoreData.id, ascending: true)]
+        fetch.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerCoreData.trackerID, ascending: true)]
         // Создание контроллера с результатами запроса
         let controller = NSFetchedResultsController(
             fetchRequest: fetch,
@@ -60,9 +60,7 @@ final class TrackerStore: NSObject {
         trackerCoreData.title = tracker.title
         trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
         trackerCoreData.emoji = tracker.emoji
-        trackerCoreData.schedule = tracker.schedule?.map {
-            $0.rawValue
-        }
+        trackerCoreData.schedule = tracker.schedule?.map { $0.rawValue }
         try context.save()
     }
     // Метод для преобразования объекта TrackerCoreData в объект Tracker
@@ -78,6 +76,8 @@ final class TrackerStore: NSObject {
         return Tracker(trackerID: id, title: title, color: color, emoji: emoji, schedule: schedule.map({ Weekday(rawValue: $0)!}))
     }
 }
+
+// MARK: - NSFetchedResultsControllerDelegate
 // Расширение для реализации методов делегата NSFetchedResultsController
 extension TrackerStore: NSFetchedResultsControllerDelegate {
     // Метод, вызываемый при изменении содержимого контроллера
