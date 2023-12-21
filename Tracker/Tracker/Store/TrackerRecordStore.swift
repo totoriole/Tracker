@@ -40,7 +40,7 @@ final class TrackerRecordStore: NSObject {
         super.init()
         // Настройка запроса для получения объектов TrackerRecordCoreData
         let fetch = TrackerRecordCoreData.fetchRequest()
-        fetch.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerRecordCoreData.id, ascending: true)]
+        fetch.sortDescriptors = [NSSortDescriptor(keyPath: \TrackerRecordCoreData.trackerRecordID, ascending: true)]
         // Создание контроллера с результатами запроса
         let controller = NSFetchedResultsController(
             fetchRequest: fetch,

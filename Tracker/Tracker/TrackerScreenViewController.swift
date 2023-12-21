@@ -192,7 +192,8 @@ final class TrackerScreenViewController: UIViewController {
                     }
                     return day.rawValue == currentDay
                 } ?? false
-                let titleContains = tracker.title.contains(self.filterText ?? "") || (self.filterText ?? "").isEmpty
+                let titleContains = tracker.title.contains(self.filterText ?? "") || 
+                (self.filterText ?? "").isEmpty
                 return scheduleContains && titleContains
             })
         }
@@ -242,7 +243,7 @@ extension TrackerScreenViewController: UITextFieldDelegate {
 // Добавление нового трекера и обновление экрана
 extension TrackerScreenViewController: TrackersActions {
     func appendTracker(tracker: Tracker) {
-        self.trackers.append(tracker) // Добавление трекера в массив
+//        self.trackers.append(tracker)  //Добавление трекера в массив
         // Обновление массива категорий с учетом нового трекера
         try! self.trackerStore.addNewTracker(tracker)
         self.categories = self.categories.map { category in
