@@ -9,6 +9,8 @@ import UIKit
 
 final class TrackerScreenViewController: UIViewController {
     
+    private var trackerStore = TrackerStore()
+    private var trackerRecordStore = TrackerRecordStore()
     private var trackers: [Tracker] = [] // массив для хранения привычек
     private var categories: [TrackerCategory] = [] // массив для категорий привычек
     private var completedTrackers: [TrackerRecord] = [] // массив выполненых трекеоров
@@ -109,6 +111,11 @@ final class TrackerScreenViewController: UIViewController {
         categories.append(category)
         print("After appending category: \(categories)")
         showFirstScreen()
+        
+        trackerStore.delegate = self
+        trackerRecordStore = self
+        trackers = trackerStore.trackers
+        completedTrackers = trackerRecordStore.trackerRecords
         
         collectionView.dataSource = self
         collectionView.delegate = self

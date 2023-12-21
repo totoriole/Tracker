@@ -15,6 +15,7 @@ struct Tracker {
     let schedule: [Weekday]?
     
 }
+
 enum Weekday: Int, CaseIterable {
     
     case monday = 2

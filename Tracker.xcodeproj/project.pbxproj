@@ -23,6 +23,7 @@
 		BB4D42F32B30CD7B00CABBEE /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F22B30CD7B00CABBEE /* TrackerStore.swift */; };
 		BB4D42F82B30CDD900CABBEE /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */; };
 		BB4D42FA2B30CE0500CABBEE /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F92B30CE0500CABBEE /* TrackerRecordStore.swift */; };
+		BB5FDC002B33C8FA00B8CD0A /* EventEmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5FDBFF2B33C8FA00B8CD0A /* EventEmojiCell.swift */; };
 		BB6C2E192B0F19EA00063F99 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6C2E182B0F19EA00063F99 /* Date+Extension.swift */; };
 		BB6C2E1B2B0F1A3000063F99 /* EmojiString+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6C2E1A2B0F1A3000063F99 /* EmojiString+Extension.swift */; };
 		BB94802A2B277CE30064278C /* ColorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9480292B277CE30064278C /* ColorViewCell.swift */; };
@@ -59,6 +60,7 @@
 		BB4D42F22B30CD7B00CABBEE /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		BB4D42F92B30CE0500CABBEE /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
+		BB5FDBFF2B33C8FA00B8CD0A /* EventEmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmojiCell.swift; sourceTree = "<group>"; };
 		BB6C2E182B0F19EA00063F99 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		BB6C2E1A2B0F1A3000063F99 /* EmojiString+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EmojiString+Extension.swift"; sourceTree = "<group>"; };
 		BB9480292B277CE30064278C /* ColorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewCell.swift; sourceTree = "<group>"; };
@@ -172,6 +174,7 @@
 			children = (
 				BBF4CF542B0D320400F2CCC0 /* IrregularEventViewController.swift */,
 				BBF4CF562B0D33CB00F2CCC0 /* IrregularEventCell.swift */,
+				BB5FDBFF2B33C8FA00B8CD0A /* EventEmojiCell.swift */,
 			);
 			path = Event;
 			sourceTree = "<group>";
@@ -291,6 +294,7 @@
 				BBF4CF5F2B0D37FC00F2CCC0 /* HeaderSectionView.swift in Sources */,
 				BBA63F2A2B23A3350043886F /* EmojiViewCell.swift in Sources */,
 				994313802AEAF50100410757 /* SceneDelegate.swift in Sources */,
+				BB5FDC002B33C8FA00B8CD0A /* EventEmojiCell.swift in Sources */,
 				994313922AEB15B900410757 /* LaunchScreenTracker.swift in Sources */,
 				BB4D42FA2B30CE0500CABBEE /* TrackerRecordStore.swift in Sources */,
 				BBF4CF552B0D320400F2CCC0 /* IrregularEventViewController.swift in Sources */,
