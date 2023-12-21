@@ -24,6 +24,9 @@
 		BB4D42F82B30CDD900CABBEE /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */; };
 		BB4D42FA2B30CE0500CABBEE /* TrackerRecordStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F92B30CE0500CABBEE /* TrackerRecordStore.swift */; };
 		BB5FDC002B33C8FA00B8CD0A /* EventEmojiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5FDBFF2B33C8FA00B8CD0A /* EventEmojiCell.swift */; };
+		BB5FDC022B33CAAD00B8CD0A /* EventColorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5FDC012B33CAAD00B8CD0A /* EventColorCell.swift */; };
+		BB5FDC042B33CB3500B8CD0A /* EventEmojiHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5FDC032B33CB3500B8CD0A /* EventEmojiHeader.swift */; };
+		BB5FDC062B33CBB600B8CD0A /* EventColorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB5FDC052B33CBB600B8CD0A /* EventColorHeader.swift */; };
 		BB6C2E192B0F19EA00063F99 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6C2E182B0F19EA00063F99 /* Date+Extension.swift */; };
 		BB6C2E1B2B0F1A3000063F99 /* EmojiString+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB6C2E1A2B0F1A3000063F99 /* EmojiString+Extension.swift */; };
 		BB94802A2B277CE30064278C /* ColorViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB9480292B277CE30064278C /* ColorViewCell.swift */; };
@@ -61,6 +64,9 @@
 		BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
 		BB4D42F92B30CE0500CABBEE /* TrackerRecordStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStore.swift; sourceTree = "<group>"; };
 		BB5FDBFF2B33C8FA00B8CD0A /* EventEmojiCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmojiCell.swift; sourceTree = "<group>"; };
+		BB5FDC012B33CAAD00B8CD0A /* EventColorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventColorCell.swift; sourceTree = "<group>"; };
+		BB5FDC032B33CB3500B8CD0A /* EventEmojiHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventEmojiHeader.swift; sourceTree = "<group>"; };
+		BB5FDC052B33CBB600B8CD0A /* EventColorHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventColorHeader.swift; sourceTree = "<group>"; };
 		BB6C2E182B0F19EA00063F99 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		BB6C2E1A2B0F1A3000063F99 /* EmojiString+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EmojiString+Extension.swift"; sourceTree = "<group>"; };
 		BB9480292B277CE30064278C /* ColorViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorViewCell.swift; sourceTree = "<group>"; };
@@ -175,6 +181,9 @@
 				BBF4CF542B0D320400F2CCC0 /* IrregularEventViewController.swift */,
 				BBF4CF562B0D33CB00F2CCC0 /* IrregularEventCell.swift */,
 				BB5FDBFF2B33C8FA00B8CD0A /* EventEmojiCell.swift */,
+				BB5FDC012B33CAAD00B8CD0A /* EventColorCell.swift */,
+				BB5FDC032B33CB3500B8CD0A /* EventEmojiHeader.swift */,
+				BB5FDC052B33CBB600B8CD0A /* EventColorHeader.swift */,
 			);
 			path = Event;
 			sourceTree = "<group>";
@@ -284,8 +293,10 @@
 				BBF4CF612B0D75B800F2CCC0 /* ScheduleCell.swift in Sources */,
 				BBF4CF5A2B0D347700F2CCC0 /* ScheduleViewController.swift in Sources */,
 				BBF4CF502B0D2BB100F2CCC0 /* HabitViewController.swift in Sources */,
+				BB5FDC022B33CAAD00B8CD0A /* EventColorCell.swift in Sources */,
 				994313822AEAF50100410757 /* TrackerScreenViewController.swift in Sources */,
 				9943137E2AEAF50100410757 /* AppDelegate.swift in Sources */,
+				BB5FDC042B33CB3500B8CD0A /* EventEmojiHeader.swift in Sources */,
 				BB4D42F82B30CDD900CABBEE /* TrackerCategoryStore.swift in Sources */,
 				998EA8252AFDF1E90071E73A /* TrackerModels.swift in Sources */,
 				BB6C2E192B0F19EA00063F99 /* Date+Extension.swift in Sources */,
@@ -301,6 +312,7 @@
 				BBF4CF572B0D33CB00F2CCC0 /* IrregularEventCell.swift in Sources */,
 				BB4D42F32B30CD7B00CABBEE /* TrackerStore.swift in Sources */,
 				BB4D42E72B2BBE3D00CABBEE /* TrackerDataModel.xcdatamodeld in Sources */,
+				BB5FDC062B33CBB600B8CD0A /* EventColorHeader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
