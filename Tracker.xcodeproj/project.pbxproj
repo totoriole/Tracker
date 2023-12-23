@@ -19,6 +19,7 @@
 		99F97C852AF4B01E000811A7 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99F97C842AF4B01E000811A7 /* TabBarController.swift */; };
 		99F97C882AF4B8FD000811A7 /* StatisticScreenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99F97C872AF4B8FD000811A7 /* StatisticScreenViewController.swift */; };
 		BB08DF022B338A1A002CE42A /* UIColorMarshalling.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB08DF012B338A1A002CE42A /* UIColorMarshalling.swift */; };
+		BB3CCE062B36A792009A8FF9 /* DaysValueTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB3CCE052B36A792009A8FF9 /* DaysValueTransformer.swift */; };
 		BB4D42E72B2BBE3D00CABBEE /* TrackerDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42E52B2BBE3D00CABBEE /* TrackerDataModel.xcdatamodeld */; };
 		BB4D42F32B30CD7B00CABBEE /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F22B30CD7B00CABBEE /* TrackerStore.swift */; };
 		BB4D42F82B30CDD900CABBEE /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */; };
@@ -59,6 +60,7 @@
 		99F97C842AF4B01E000811A7 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		99F97C872AF4B8FD000811A7 /* StatisticScreenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticScreenViewController.swift; sourceTree = "<group>"; };
 		BB08DF012B338A1A002CE42A /* UIColorMarshalling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorMarshalling.swift; sourceTree = "<group>"; };
+		BB3CCE052B36A792009A8FF9 /* DaysValueTransformer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysValueTransformer.swift; sourceTree = "<group>"; };
 		BB4D42E62B2BBE3D00CABBEE /* TrackerDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TrackerDataModel.xcdatamodel; sourceTree = "<group>"; };
 		BB4D42F22B30CD7B00CABBEE /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				BB4D42F72B30CDD900CABBEE /* TrackerCategoryStore.swift */,
 				BB4D42F92B30CE0500CABBEE /* TrackerRecordStore.swift */,
 				BB08DF012B338A1A002CE42A /* UIColorMarshalling.swift */,
+				BB3CCE052B36A792009A8FF9 /* DaysValueTransformer.swift */,
 			);
 			path = Store;
 			sourceTree = "<group>";
@@ -310,6 +313,7 @@
 				BB4D42FA2B30CE0500CABBEE /* TrackerRecordStore.swift in Sources */,
 				BBF4CF552B0D320400F2CCC0 /* IrregularEventViewController.swift in Sources */,
 				BBF4CF572B0D33CB00F2CCC0 /* IrregularEventCell.swift in Sources */,
+				BB3CCE062B36A792009A8FF9 /* DaysValueTransformer.swift in Sources */,
 				BB4D42F32B30CD7B00CABBEE /* TrackerStore.swift in Sources */,
 				BB4D42E72B2BBE3D00CABBEE /* TrackerDataModel.xcdatamodeld in Sources */,
 				BB5FDC062B33CBB600B8CD0A /* EventColorHeader.swift in Sources */,

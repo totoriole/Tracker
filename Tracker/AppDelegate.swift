@@ -23,6 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = rootViewController
         // Делаем окно видимым
         window?.makeKeyAndVisible()
+        // Регистрируем трансформер
+        DaysValueTransformer.register()
         return true
     }
 

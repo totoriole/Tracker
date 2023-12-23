@@ -55,19 +55,13 @@ final class TrackerStore: NSObject {
     }
     // Метод для добавления нового объекта Tracker в хранилище
     func addNewTracker(_ tracker: Tracker) throws {
-//        let trackerCoreData = TrackerCoreData(context: context)
-//        trackerCoreData.trackerID = tracker.trackerID
-//        trackerCoreData.title = tracker.title
-        //        trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
-        //        trackerCoreData.emoji = tracker.emoji
-        //        trackerCoreData.schedule = tracker.schedule?.compactMap{ $0.rawValue}
-        //        try context.save()
         let trackerCoreData = TrackerCoreData(context: context)
         trackerCoreData.trackerID = tracker.trackerID
         trackerCoreData.title = tracker.title
-        trackerCoreData.emoji = tracker.emoji
         trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
-        trackerCoreData.schedule = Weekday.code(tracker.schedule)
+        trackerCoreData.emoji = tracker.emoji
+        let convertedSchedule: [Int] = (tracker.schedule?.compactMap { $0.rawValue })!
+        trackerCoreData.schedule = convertedSchedule
         try context.save()
     }
     // Метод для преобразования объекта TrackerCoreData в объект Tracker
