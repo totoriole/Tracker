@@ -8,13 +8,15 @@
 import UIKit
 
 struct Tracker {
-    let id = UUID()
+    let trackerID: UUID
     let title: String
     let color: UIColor
     let emoji: String
     let schedule: [Weekday]?
+    
 }
-enum Weekday: Int, CaseIterable {
+
+enum Weekday: Int, CaseIterable, Codable {
     
     case monday = 2
     case tuesday = 3
@@ -42,18 +44,18 @@ enum Weekday: Int, CaseIterable {
             return "Воскресенье"
         }
     }
-}
-
-extension Weekday: Comparable {
-    static func < (lhs: Weekday, rhs: Weekday) -> Bool {
-        guard
-            let first = Self.allCases.firstIndex(of: lhs),
-            let second = Self.allCases.firstIndex(of: rhs)
-        else {
-            return false
+    //MARK: - Comparator
+        
+        static func < (lhs: Weekday, rhs: Weekday) -> Bool {
+            guard
+                let first = Self.allCases.firstIndex(of: lhs),
+                let second = Self.allCases.firstIndex(of: rhs)
+            else {
+                return false
+            }
+            
+            return first < second
         }
-        return first < second
-    }
 }
 
 struct TrackerCategory {
@@ -62,7 +64,6 @@ struct TrackerCategory {
 }
 
 struct TrackerRecord {
-    let id: UUID
+    let trackerRecordID: UUID
     let date: Date
 }
-

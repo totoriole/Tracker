@@ -99,7 +99,7 @@ final class TrackerCell: UICollectionViewCell {
     func configure(tracker: Tracker, isCompletedToday: Bool, completedDays: Int, indexPath: IndexPath) {
         self.isCompletedToday = isCompletedToday
         self.indexPath = indexPath
-        self.trackerId = tracker.id
+        self.trackerId = tracker.trackerID
         self.trackerCard.backgroundColor = tracker.color
         trackerDescription.text = tracker.title
         trackerEmoji.text = tracker.emoji

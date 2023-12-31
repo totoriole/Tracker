@@ -1,14 +1,14 @@
 //
-//  EmojiViewCell.swift
+//  EventEmojiCell.swift
 //  Tracker
 //
-//  Created by Bumbie on 08.12.2023.
+//  Created by Bumbie on 20.12.2023.
 //
 
 import UIKit
 
-final class EmojiViewCell: UICollectionViewCell {
-    static var reuseID = "EmojiCell"
+final class EventEmojiCell: UICollectionViewCell {
+    static var reuseID = "EventEmojiCell"
     
     let emojiLabel: UILabel = {
         let label = UILabel()
@@ -20,6 +20,7 @@ final class EmojiViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+
         contentView.addSubview(emojiLabel)
         
         NSLayoutConstraint.activate([

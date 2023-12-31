@@ -9,6 +9,8 @@ import UIKit
 
 final class TrackerScreenViewController: UIViewController {
     
+    private var trackerStore = TrackerStore()
+    private var trackerRecordStore = TrackerRecordStore()
     private var trackers: [Tracker] = [] // массив для хранения привычек
     private var categories: [TrackerCategory] = [] // массив для категорий привычек
     private var completedTrackers: [TrackerRecord] = [] // массив выполненых трекеоров
@@ -108,7 +110,13 @@ final class TrackerScreenViewController: UIViewController {
         let category = TrackerCategory(title: "Домашние дела", trackers: trackers) // Тестовый пример - создание категории с трекерами
         categories.append(category)
         print("After appending category: \(categories)")
+        filterVisibleCategories()
         showFirstScreen()
+        
+        trackerStore.delegate = self
+        trackerRecordStore.delegate = self
+        trackers = trackerStore.trackers
+        completedTrackers = trackerRecordStore.trackerRecords
         
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -168,6 +176,12 @@ final class TrackerScreenViewController: UIViewController {
     
     // Фильтрация трекеров в соответствии с выбранным днем недели и текстом поиска
     private func filterTrackers() {
+        filterVisibleCategories()
+        showNextScreen()
+        collectionView.reloadData()
+    }
+    
+    private func filterVisibleCategories() {
         // Фильтрация и обновление отображаемых категорий и трекеров
         visibleCategories = categories.map { category in
             TrackerCategory(title: category.title, trackers: category.trackers.filter { tracker in
@@ -178,7 +192,8 @@ final class TrackerScreenViewController: UIViewController {
                     }
                     return day.rawValue == currentDay
                 } ?? false
-                let titleContains = tracker.title.contains(self.filterText ?? "") || (self.filterText ?? "").isEmpty
+                let titleContains = tracker.title.contains(self.filterText ?? "") || 
+                (self.filterText ?? "").isEmpty
                 return scheduleContains && titleContains
             })
         }
@@ -186,9 +201,6 @@ final class TrackerScreenViewController: UIViewController {
         .filter { category in
             !category.trackers.isEmpty
         }
-        showNextScreen()
-        
-        collectionView.reloadData()
     }
     
     @objc private func didTapPluseButton() {
@@ -200,6 +212,13 @@ final class TrackerScreenViewController: UIViewController {
     @objc private func pickerChanged() {
         selectCurrentDay()
         filterTrackers()
+    }
+}
+
+extension TrackerScreenViewController: TrackerStoreDelegate {
+    func store() {
+        trackers = trackerStore.trackers
+        collectionView.reloadData()
     }
 }
 
@@ -224,8 +243,9 @@ extension TrackerScreenViewController: UITextFieldDelegate {
 // Добавление нового трекера и обновление экрана
 extension TrackerScreenViewController: TrackersActions {
     func appendTracker(tracker: Tracker) {
-        self.trackers.append(tracker) // Добавление трекера в массив
+//        self.trackers.append(tracker)  //Добавление трекера в массив
         // Обновление массива категорий с учетом нового трекера
+        try! self.trackerStore.addNewTracker(tracker)
         self.categories = self.categories.map { category in
             var updatedTrackers = category.trackers
             updatedTrackers.append(tracker)
@@ -255,16 +275,17 @@ extension TrackerScreenViewController: TrackersActions {
             initialLabel.isHidden = true
             initialTrackerImage.isHidden = true
         } else if visibleCategories.isEmpty {
+            collectionView.isHidden = true
             plugTrackerImage.isHidden = true
             plugLabel.isHidden = true
             initialLabel.isHidden = false
             initialTrackerImage.isHidden = false
         } else {
             collectionView.isHidden = false
-            plugLabel.isHidden = false
-            plugTrackerImage.isHidden = false
-            initialLabel.isHidden = false
-            initialTrackerImage.isHidden = false
+            plugLabel.isHidden = true
+            plugTrackerImage.isHidden = true
+            initialLabel.isHidden = true
+            initialTrackerImage.isHidden = true
         }
     }
 }
@@ -283,9 +304,9 @@ extension TrackerScreenViewController: UICollectionViewDataSource {
         cell.prepareForReuse()
         let tracker = visibleCategories[indexPath.section].trackers[indexPath.row]
         cell.delegate = self
-        let isCompletedToday = isTrackerCompletedToday(id: tracker.id)
+        let isCompletedToday = isTrackerCompletedToday(id: tracker.trackerID)
         let completedDays = completedTrackers.filter {
-            $0.id == tracker.id
+            $0.trackerRecordID == tracker.trackerID
         }.count
         cell.configure(tracker: tracker, isCompletedToday: isCompletedToday, completedDays: completedDays, indexPath: indexPath)
         
@@ -317,7 +338,15 @@ extension TrackerScreenViewController: UICollectionViewDataSource {
     // Проверка, является ли запись трекера одинаковой
     private func isSameTrackerRecord(trackerRecord: TrackerRecord, id: UUID) -> Bool {
         let isSameDay = Calendar.current.isDate(trackerRecord.date, inSameDayAs: datePicker.date)
-        return trackerRecord.id == id && isSameDay
+        return trackerRecord.trackerRecordID == id && isSameDay
+    }
+}
+
+// MARK: - rackerRecordStoreDelegate
+extension TrackerScreenViewController: TrackerRecordStoreDelegate {
+    func storeRecord() {
+        completedTrackers = trackerRecordStore.trackerRecords
+        collectionView.reloadData()
     }
 }
 
@@ -330,10 +359,11 @@ extension TrackerScreenViewController: TrackerCellDelegate {
         // Проверка, что выбранная дата не позднее текущей
         if calendar.compare(selectedDate, to: currentDate, toGranularity: .day) != .orderedDescending {
             // Создание записи о завершении трекера и добавление в массив завершенных
-            let trackerRecord = TrackerRecord(id: id, date: selectedDate)
-            completedTrackers.append(trackerRecord)
+            let trackerRecord = TrackerRecord(trackerRecordID: id, date: selectedDate)
+//            completedTrackers.append(trackerRecord)
             // Обновление соответствующей ячейки в коллекции
-            collectionView.reloadItems(at: [indexPath])
+            try! self.trackerRecordStore.addNewTrackerRecord(trackerRecord)
+//            collectionView.reloadItems(at: [indexPath])
         } else {
             return // Если выбранная дата позднее текущей, прерываем выполнение функции
         }
@@ -341,11 +371,15 @@ extension TrackerScreenViewController: TrackerCellDelegate {
     // Обработка отмены завершения трекера
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
         // Удаление всех записей о завершении трекера с данным идентификатором
-        completedTrackers.removeAll { trackerRecord in
-            isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
+//        completedTrackers.removeAll { trackerRecord in
+//            isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
+//        }
+        let remove = completedTrackers.first {
+            isSameTrackerRecord(trackerRecord: $0, id: id)
         }
         // Обновление соответствующей ячейки в коллекции
-        collectionView.reloadItems(at: [indexPath])
+//        collectionView.reloadItems(at: [indexPath])
+        try! self.trackerRecordStore.removeTrackerRecord(remove)
     }
 }
 

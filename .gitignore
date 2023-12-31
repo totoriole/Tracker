@@ -6,6 +6,7 @@
 **/.DS_Store
 ## User settings
 xcuserdata/
+*.xcuserstate
 
 ## compatibility with Xcode 8 and earlier (ignoring not required starting Xcode 9)
 *.xcscmblueprint
@@ -84,3 +85,9 @@ fastlane/test_output
 iOSInjectionProject/
 
 # End of https://www.toptal.com/developers/gitignore/api/swift
+Tracker.xcodeproj/project.xcworkspace/xcuserdata/bumbie.xcuserdatad/UserInterfaceState.xcuserstate
+
+xcuserdata
+xcuserdata/*
+*.xcuserstate
+
