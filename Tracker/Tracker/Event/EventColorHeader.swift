@@ -20,6 +20,7 @@ final class EventColorHeader: UICollectionReusableView {
         let label = UILabel()
         label.font = .systemFont(ofSize: 19, weight: .bold)
         label.textColor = .blackday
+        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     

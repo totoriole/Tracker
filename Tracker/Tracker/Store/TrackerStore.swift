@@ -60,8 +60,9 @@ final class TrackerStore: NSObject {
         trackerCoreData.title = tracker.title
         trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
         trackerCoreData.emoji = tracker.emoji
-        let convertedSchedule: [Int] = (tracker.schedule?.compactMap { $0.rawValue })!
-        trackerCoreData.schedule = convertedSchedule
+        if let schedule = tracker.schedule {
+            trackerCoreData.schedule = schedule.compactMap { $0.rawValue } as NSArray
+        }
         try context.save()
     }
     // Метод для преобразования объекта TrackerCoreData в объект Tracker
@@ -70,11 +71,11 @@ final class TrackerStore: NSObject {
               let emoji = trackerCoreData.emoji,
               let color = uiColorMarshalling.color(from: trackerCoreData.color ?? ""),
               let title = trackerCoreData.title,
-              let schedule = trackerCoreData.schedule
+              let schedule = trackerCoreData.schedule as? [Int]
         else {
             fatalError()
         }
-        return Tracker(trackerID: id, title: title, color: color, emoji: emoji, schedule: schedule.map({ Weekday(rawValue: $0)!}))
+        return Tracker(trackerID: id, title: title, color: color, emoji: emoji, schedule: schedule.compactMap{ Weekday(rawValue: $0)})
     }
 }
 

@@ -63,9 +63,9 @@ final class TrackerRecordStore: NSObject {
     }
     // Метод для удаления записи отслеживания из хранилища
     func removeTrackerRecord(_ trackerRecord: TrackerRecord?) throws {
-        guard let toDelete = try self.fetchTrackerRecord(with: trackerRecord)
+        guard let delete = try self.fetchTrackerRecord(with: trackerRecord)
         else { fatalError() }
-        context.delete(toDelete)
+        context.delete(delete)
         try context.save()
     }
     // Метод для преобразования объекта TrackerRecordCoreData в объект TrackerRecord

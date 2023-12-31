@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Делаем окно видимым
         window?.makeKeyAndVisible()
         // Регистрируем трансформер
-        DaysValueTransformer.register()
+//        DaysValueTransformer.register()
         return true
     }
 
