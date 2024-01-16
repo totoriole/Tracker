@@ -25,15 +25,19 @@ final class TrackerStore: NSObject {
     var trackers: [Tracker] {
         guard
             let objects = self.fetchedResultsController.fetchedObjects,
-            let trackers: [Tracker] = try? objects.map({ try self.tracker(from: $0) })
+            let trackers: [Tracker] = try? objects.map({ try self.makeTracker(from: $0) })
         else { return [] }
         return trackers
     }
     // Инициализатор по умолчанию для использования контекста из AppDelegate
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).context
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            fatalError("Сouldn't get app AppDelegate")
+        }
+        let context = appDelegate.context
         try! self.init(context: context)
     }
+    
     // Основной инициализатор, принимающий контекст Core Data
     init(context: NSManagedObjectContext) throws {
         self.context = context
@@ -56,7 +60,7 @@ final class TrackerStore: NSObject {
     // Метод для добавления нового объекта Tracker в хранилище
     func addNewTracker(_ tracker: Tracker) throws {
         let trackerCoreData = TrackerCoreData(context: context)
-        trackerCoreData.trackerID = tracker.trackerID
+        trackerCoreData.trackerID = tracker.trackerID.uuidString
         trackerCoreData.title = tracker.title
         trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
         trackerCoreData.emoji = tracker.emoji
@@ -66,16 +70,31 @@ final class TrackerStore: NSObject {
         try context.save()
     }
     // Метод для преобразования объекта TrackerCoreData в объект Tracker
-    func tracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
-        guard let id = trackerCoreData.trackerID,
-              let emoji = trackerCoreData.emoji,
-              let color = uiColorMarshalling.color(from: trackerCoreData.color ?? ""),
-              let title = trackerCoreData.title,
-              let schedule = trackerCoreData.schedule as? [Int]
-        else {
-            fatalError()
-        }
+    func makeTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
+        guard
+                    let idString = trackerCoreData.trackerID,
+                    let id = UUID(uuidString: idString),
+                    let title = trackerCoreData.title,
+                    let emoji = trackerCoreData.emoji,
+                    let color = uiColorMarshalling.color(from: trackerCoreData.color ?? ""),
+                    let schedule = trackerCoreData.schedule as? [Int]
+                else { throw StoreError.decodeError }
         return Tracker(trackerID: id, title: title, color: color, emoji: emoji, schedule: schedule.compactMap{ Weekday(rawValue: $0)})
+//        guard let id = trackerCoreData.trackerID,
+//              let emoji = trackerCoreData.emoji,
+//              let color = uiColorMarshalling.color(from: trackerCoreData.color ?? ""),
+//              let title = trackerCoreData.title,
+//              let schedule = trackerCoreData.schedule as? [Int]
+//        else {
+//            StoreError.decodeError
+//        }
+//        return Tracker(trackerID: id, title: title, color: color, emoji: emoji, schedule: schedule.compactMap{ Weekday(rawValue: $0)})
+    }
+}
+
+extension TrackerStore {
+    enum StoreError: Error {
+        case decodeError
     }
 }
 

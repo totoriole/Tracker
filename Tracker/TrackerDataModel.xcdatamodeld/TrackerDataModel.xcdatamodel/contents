@@ -2,6 +2,7 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="23C71" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="TrackerCategoryCoreData" representedClassName="TrackerCategoryCoreData" syncable="YES" codeGenerationType="class">
         <attribute name="title" attributeType="String"/>
+        <attribute name="trackers" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <relationship name="tracker" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerCoreData" inverseName="category" inverseEntity="TrackerCoreData"/>
     </entity>
     <entity name="TrackerCoreData" representedClassName="TrackerCoreData" syncable="YES" codeGenerationType="class">
@@ -9,11 +10,11 @@
         <attribute name="emoji" attributeType="String"/>
         <attribute name="schedule" attributeType="Transformable" valueTransformerName="DaysValueTransformer"/>
         <attribute name="title" attributeType="String"/>
-        <attribute name="trackerID" attributeType="UUID" usesScalarValueType="NO" customClassName="UUID."/>
+        <attribute name="trackerID" attributeType="String" customClassName="UUID."/>
         <relationship name="category" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackerCategoryCoreData" inverseName="tracker" inverseEntity="TrackerCategoryCoreData"/>
     </entity>
     <entity name="TrackerRecordCoreData" representedClassName="TrackerRecordCoreData" syncable="YES" codeGenerationType="class">
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="trackerRecordID" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="trackerRecordID" attributeType="String"/>
     </entity>
 </model>

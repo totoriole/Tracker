@@ -107,8 +107,8 @@ final class TrackerScreenViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: pluseButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         print("Before appending category: \(categories)")
-        let category = TrackerCategory(title: "Домашние дела", trackers: trackers) // Тестовый пример - создание категории с трекерами
-        categories.append(category)
+//        let category = TrackerCategory(title: "Домашние дела", trackers: trackers) // Тестовый пример - создание категории с трекерами
+//        categories.append(category)
         print("After appending category: \(categories)")
         filterVisibleCategories()
         showFirstScreen()
@@ -243,9 +243,9 @@ extension TrackerScreenViewController: UITextFieldDelegate {
 // Добавление нового трекера и обновление экрана
 extension TrackerScreenViewController: TrackersActions {
     func appendTracker(tracker: Tracker) {
-//        self.trackers.append(tracker)  //Добавление трекера в массив
+        self.trackers.append(tracker)  //Добавление трекера в массив
         // Обновление массива категорий с учетом нового трекера
-        try! self.trackerStore.addNewTracker(tracker)
+        try? self.trackerStore.addNewTracker(tracker)
         self.categories = self.categories.map { category in
             var updatedTrackers = category.trackers
             updatedTrackers.append(tracker)
@@ -360,10 +360,10 @@ extension TrackerScreenViewController: TrackerCellDelegate {
         if calendar.compare(selectedDate, to: currentDate, toGranularity: .day) != .orderedDescending {
             // Создание записи о завершении трекера и добавление в массив завершенных
             let trackerRecord = TrackerRecord(trackerRecordID: id, date: selectedDate)
-//            completedTrackers.append(trackerRecord)
+            completedTrackers.append(trackerRecord)
             // Обновление соответствующей ячейки в коллекции
             try! self.trackerRecordStore.addNewTrackerRecord(trackerRecord)
-//            collectionView.reloadItems(at: [indexPath])
+            collectionView.reloadItems(at: [indexPath])
         } else {
             return // Если выбранная дата позднее текущей, прерываем выполнение функции
         }
@@ -371,14 +371,14 @@ extension TrackerScreenViewController: TrackerCellDelegate {
     // Обработка отмены завершения трекера
     func uncompleteTracker(id: UUID, at indexPath: IndexPath) {
         // Удаление всех записей о завершении трекера с данным идентификатором
-//        completedTrackers.removeAll { trackerRecord in
-//            isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
-//        }
+        completedTrackers.removeAll { trackerRecord in
+            isSameTrackerRecord(trackerRecord: trackerRecord, id: id)
+        }
         let remove = completedTrackers.first {
             isSameTrackerRecord(trackerRecord: $0, id: id)
         }
         // Обновление соответствующей ячейки в коллекции
-//        collectionView.reloadItems(at: [indexPath])
+        collectionView.reloadItems(at: [indexPath])
         try! self.trackerRecordStore.removeTrackerRecord(remove)
     }
 }

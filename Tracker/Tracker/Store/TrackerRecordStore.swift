@@ -57,31 +57,38 @@ final class TrackerRecordStore: NSObject {
     // Метод для добавления новой записи отслеживания в хранилище
     func addNewTrackerRecord(_ trackerRecord: TrackerRecord) throws {
         let trackerRecordCoreData = TrackerRecordCoreData(context: context)
-        trackerRecordCoreData.trackerRecordID = trackerRecord.trackerRecordID
+        trackerRecordCoreData.trackerRecordID = trackerRecord.trackerRecordID.uuidString
         trackerRecordCoreData.date = trackerRecord.date
         try context.save()
     }
     // Метод для удаления записи отслеживания из хранилища
     func removeTrackerRecord(_ trackerRecord: TrackerRecord?) throws {
         guard let delete = try self.fetchTrackerRecord(with: trackerRecord)
-        else { fatalError() }
+        else { return }
         context.delete(delete)
         try context.save()
     }
     // Метод для преобразования объекта TrackerRecordCoreData в объект TrackerRecord
     func record(from trackerRecordCoreData: TrackerRecordCoreData) throws -> TrackerRecord {
         guard let trackerRecordID = trackerRecordCoreData.trackerRecordID,
+              let id = UUID(uuidString: trackerRecordID),
               let date = trackerRecordCoreData.date
         else { fatalError() }
-        return TrackerRecord(trackerRecordID: trackerRecordID, date: date)
+        return TrackerRecord(trackerRecordID: id, date: date)
     }
     // Метод для получения объекта TrackerRecordCoreData по заданной записи отслеживания
     func fetchTrackerRecord(with trackerRecord: TrackerRecord?) throws -> TrackerRecordCoreData? {
-        guard let trackerRecord = trackerRecord else { fatalError() }
+        guard let trackerRecord = trackerRecord else { return nil }
         let fetchRequest: NSFetchRequest<TrackerRecordCoreData> = TrackerRecordCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "trackerRecordID == %@", trackerRecord.trackerRecordID as CVarArg)
-        let result = try context.fetch(fetchRequest)
-        return result.first
+        do {
+            let result = try context.fetch(fetchRequest)
+            return result.first
+        } catch {
+            // Обработка ошибок, например, вывод в консоль или возвращение nil
+            print("Error fetching tracker record: \(error)")
+            return nil
+        }
     }
 }
 

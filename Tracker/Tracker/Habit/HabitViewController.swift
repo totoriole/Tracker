@@ -17,6 +17,7 @@ protocol TrackersActions {
 final class HabitViewController: UIViewController {
     
     var trackersViewController: TrackersActions? // представляет объект, соответствующий протоколу TrackersActions. Это позволяет взаимодействовать с другим контроллером, реализующим этот протокол.
+    weak var delegate: CreateTrackerViewControllerDelegate?
     let cellReuseIdentifier = "CreateTrackersTableViewCell"
     
     private var selectedDays: [Weekday] = []
@@ -24,6 +25,8 @@ final class HabitViewController: UIViewController {
     private let emojies: [String] = String.selectionEmojies
     private var selectedColor: UIColor?
     private var selectedEmoji: String?
+    private var selectedCategory: String?
+    private let testCategory = "Домашние дела" // удалить после реализации Категорий в 16-м спринте
     
     private let header: UILabel = {
         let header = UILabel()

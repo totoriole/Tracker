@@ -7,16 +7,24 @@
 
 import UIKit
 
+protocol CreateTrackerViewControllerDelegate: AnyObject {
+    func createNewTracker(tracker: Tracker, category: String?)
+}
+
 final class IrregularEventViewController: UIViewController {
     // Идентификатор ячейки в таблице
     let irregularEventCellReuseIdentifier = "IrregularEventTableViewCell"
     // Ссылка на объект делегата для передачи данных о созданном трекере
     var trackerScreenViewController: TrackersActions?
+    private let trackerCategoryStore = TrackerCategoryStore()
+    weak var delegate: CreateTrackerViewControllerDelegate?
     // Массив цветов для нерегулярных событий
     private let colors: [UIColor] = UIColor.selectionColors
     private let emojies: [String] = String.selectionEmojies
     private var selectedColor: UIColor?
     private var selectedEmoji: String?
+    private var selectedCategory: String?
+    private let testCategory = "Домашние дела" // удалить после реализации Категорий в 16-м спринте
 
     private let label: UILabel = {
         let label = UILabel()
@@ -202,8 +210,14 @@ final class IrregularEventViewController: UIViewController {
         // Создание нового трекера и передача его в TrackerScreenViewController
         // Создание нового объекта трекера
         let newEvent = Tracker(trackerID: UUID(), title: text, color: color, emoji: emoji, schedule: Weekday.allCases)
+        delegate?.createNewTracker(tracker: newEvent, category: selectedCategory)
         // Добавление нового трекера к trackerScreenViewController
-        trackerScreenViewController?.appendTracker(tracker: newEvent)
+//        trackerScreenViewController?.appendTracker(tracker: newEvent)
+        do {
+            try trackerCategoryStore.addNewTrackerToCategory(to: testCategory, tracker: newEvent)
+        } catch {
+            print("Error create new tracker to category: \(ErrorCreateNewTracker.errorCreatNewEvent)")
+        }
         // Перезагружаем данные в представлении, чтобы отобразить новый трекер
         trackerScreenViewController?.reload()
         // Закрытие текущего контроллера
@@ -373,6 +387,12 @@ extension IrregularEventViewController: UICollectionViewDelegate {
             let cell = collectionView.cellForItem(at: indexPath) as? EventColorCell
             cell?.layer.borderWidth = 0
         }
+    }
+}
+
+extension IrregularEventViewController {
+    enum ErrorCreateNewTracker: Error {
+        case errorCreatNewEvent
     }
 }
 
