@@ -71,15 +71,23 @@ final class TrackerStore: NSObject {
     }
     // Метод для преобразования объекта TrackerCoreData в объект Tracker
     func makeTracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
-        guard
-                    let idString = trackerCoreData.trackerID,
-                    let id = UUID(uuidString: idString),
-                    let title = trackerCoreData.title,
-                    let emoji = trackerCoreData.emoji,
-                    let color = uiColorMarshalling.color(from: trackerCoreData.color ?? ""),
-                    let schedule = trackerCoreData.schedule as? [Int]
-                else { throw StoreError.decodeError }
-        return Tracker(trackerID: id, title: title, color: color, emoji: emoji, schedule: schedule.compactMap{ Weekday(rawValue: $0)})
+        guard let idString = trackerCoreData.trackerID, let id = UUID(uuidString: idString) else {
+            throw TrackerStoreError.decodingErrorId
+        }
+        guard let title = trackerCoreData.title else {
+            throw TrackerStoreError.decodingErrorTitle
+        }
+        guard let emoji = trackerCoreData.emoji else {
+            throw TrackerStoreError.decodingErrorEmoji
+        }
+        guard let color = uiColorMarshalling.color(from: trackerCoreData.color ?? "") else {
+            throw TrackerStoreError.decodingErrorColor
+        }
+        guard let schedule = trackerCoreData.schedule as? [Weekday]//[Int]
+        else { throw TrackerStoreError.decodingErrorSchedule }
+        
+        return Tracker(trackerID: id, title: title, color: color, emoji: emoji, schedule: schedule.compactMap{ Weekday(rawValue: $0.rawValue)})
+//        return Tracker(trackerID: id, title: title, color: color, emoji: emoji, schedule: schedule.compactMap{ Weekday(rawValue: $0)}) //если выше [Int]
 //        guard let id = trackerCoreData.trackerID,
 //              let emoji = trackerCoreData.emoji,
 //              let color = uiColorMarshalling.color(from: trackerCoreData.color ?? ""),
@@ -90,11 +98,21 @@ final class TrackerStore: NSObject {
 //        }
 //        return Tracker(trackerID: id, title: title, color: color, emoji: emoji, schedule: schedule.compactMap{ Weekday(rawValue: $0)})
     }
-}
-
-extension TrackerStore {
-    enum StoreError: Error {
-        case decodeError
+    // MARK: - Public Methods
+    func savingTracker(_ tracker: Tracker) throws -> TrackerCoreData {
+        let trackerCoreData = TrackerCoreData(context: context)
+        updateTracker(trackerCoreData, with: tracker)
+        try context.save()
+        return trackerCoreData
+    }
+    func updateTracker(_ trackerCoreData: TrackerCoreData,
+                               with tracker: Tracker
+    ) {
+        trackerCoreData.trackerID = tracker.trackerID.uuidString
+        trackerCoreData.title = tracker.title
+        trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
+        trackerCoreData.emoji = tracker.emoji
+        trackerCoreData.schedule = (tracker.schedule ?? []) as [Weekday] as NSObject
     }
 }
 
@@ -106,4 +124,13 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
         // Уведомление делегата об изменении данных
         delegate?.store()
     }
+}
+
+enum TrackerStoreError: Error {
+    case decodingErrorId
+    case decodingErrorTitle
+    case decodingErrorColor
+    case decodingErrorEmoji
+    case decodingErrorSchedule
+    case decodingErrorInvalid
 }
