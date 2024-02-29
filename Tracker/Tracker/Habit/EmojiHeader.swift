@@ -7,31 +7,30 @@
 
 import UIKit
 
-final class EmojiHeader: UICollectionReusableView {
+final class HabitEmojiHeader: UICollectionReusableView {
     
-    static let id = "EmojiHeader"
-    
+    static let id = "HabitEmojiHeader"
     var headerText: String? {
         didSet {
-            headerLabel.text = headerText
+            titleLabel.text = headerText
         }
     }
     
-    private lazy var headerLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 19, weight: .bold)
         label.textColor = .blackday
+        label.font = UIFont.systemFont(ofSize: 19, weight: .bold)
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        addSubview(headerLabel)
-        
+        addSubview(titleLabel)
+
         NSLayoutConstraint.activate([
-            headerLabel.topAnchor.constraint(equalTo: topAnchor),
-            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10)
+            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 0),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10)
         ])
     }
     

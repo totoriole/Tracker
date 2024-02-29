@@ -23,7 +23,7 @@ final class TabBarController: UITabBarController {
         
         tabBar.tintColor = .blueBground
         //        tabBar.tintColor = .backgroundElement
-        tabBar.backgroundColor = .whitebackground
+        tabBar.backgroundColor = .whiteday
         
         tabBar.layer.borderColor = UIColor(named: "BackgroundElements")?.cgColor
         tabBar.layer.borderWidth = 1

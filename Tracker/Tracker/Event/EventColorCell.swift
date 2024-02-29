@@ -8,24 +8,25 @@
 import UIKit
 
 final class EventColorCell: UICollectionViewCell {
-    static var reuseId = "EventColorCell"
+    
+    static var reuseId = "Event color cell"
     
     let colorView: UIView = {
-       let view = UIView()
+        let view = UIView()
         view.layer.cornerRadius = 8
         return view
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+
         contentView.addSubview(colorView)
     }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
-        
-        colorView.frame = CGRect(x: (contentView.bounds.width - 40)/2,
-                                 y: (contentView.bounds.height - 40)/2,
+
+        colorView.frame = CGRect(x: (contentView.bounds.width - 40) / 2,
+                                 y: (contentView.bounds.height - 40) / 2,
                                  width: 40,
                                  height: 40)
     }

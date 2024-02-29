@@ -8,13 +8,14 @@
 import UIKit
 
 final class EventEmojiCell: UICollectionViewCell {
-    static var reuseID = "EventEmojiCell"
+    
+    static var reuseId = "Event emoji cell"
     
     let emojiLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 32)
-        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 32)
+        label.textAlignment = .center
         return label
     }()
     

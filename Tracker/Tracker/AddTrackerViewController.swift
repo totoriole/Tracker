@@ -49,7 +49,7 @@ final class AddTrackerViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .whitebackground
+        view.backgroundColor = .whiteday
         configureConstraints()
     }
     

@@ -8,9 +8,11 @@
 import UIKit
 
 final class HabitViewCell: UITableViewCell {
+    
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -28,12 +30,10 @@ final class HabitViewCell: UITableViewCell {
         
         backgroundColor = .backgroundday
         clipsToBounds = true
+        
         addSubview(titleLabel)
         addSubview(chevronImage)
-        configureConstraints()
-    }
-    
-    func configureConstraints() {
+        
         NSLayoutConstraint.activate([
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -48,8 +48,20 @@ final class HabitViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    //Обновляем содержимое ячейки таблицы новыми данными. Принимаем строку title и устанавливаем ее в качестве текста метки titleLabel. Таким образом, при вызове этого метода с новым заголовком, ячейка обновит свое содержимое.
     func update(with title: String) {
-        titleLabel.text = title
+        let attributedText = NSMutableAttributedString(string: title)
+        
+        if let rangeOfNewLine = title.range(of: "\n") {
+            let rangeOfFirstLine = NSRange(title.startIndex..<rangeOfNewLine.lowerBound, in: title)
+            let rangeOfSecondLine = NSRange(rangeOfNewLine.upperBound..<title.endIndex, in: title)
+            
+            attributedText.addAttribute(.foregroundColor, value: UIColor.blackday, range: rangeOfFirstLine)
+            attributedText.addAttribute(.foregroundColor, value: UIColor.greyYP, range: rangeOfSecondLine)
+        } else {
+            attributedText.addAttribute(.foregroundColor, value: UIColor.blackday, range: NSRange(title.startIndex..<title.endIndex, in: title))
+        }
+        
+        titleLabel.attributedText = attributedText
     }
+
 }

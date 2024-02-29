@@ -11,34 +11,40 @@ import UIKit
 protocol TrackersActions {
     func appendTracker(tracker: Tracker)
     func reload()
-    func showFirstScreen()
+    func showFirstStubScreen()
 }
 
 final class HabitViewController: UIViewController {
     
-    var trackersViewController: TrackersActions? // представляет объект, соответствующий протоколу TrackersActions. Это позволяет взаимодействовать с другим контроллером, реализующим этот протокол.
-    weak var delegate: CreateTrackerViewControllerDelegate?
-    let cellReuseIdentifier = "CreateTrackersTableViewCell"
-    
-    private var selectedDays: [Weekday] = []
-    private let colors: [UIColor] = UIColor.selectionColors
-    private let emojies: [String] = String.selectionEmojies
+    var trackersViewController: TrackersActions?
+    let cellReuseIdentifier = "HabitViewController"
+
     private var selectedColor: UIColor?
     private var selectedEmoji: String?
-    private var selectedCategory: String?
-    private let testCategory = "Домашние дела" // удалить после реализации Категорий в 16-м спринте
+    private var selectedDays: [Weekday] = []
+    
+    private let colors: [UIColor] = UIColor.selectionColors
+    private let emoji: [String] = String.selectionEmojies
+    
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.isScrollEnabled = true
+        return scrollView
+    }()
     
     private let header: UILabel = {
         let header = UILabel()
         header.translatesAutoresizingMaskIntoConstraints = false
         header.text = "Новая привычка"
-        header.font = .systemFont(ofSize: 16, weight: .medium)
+        header.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         header.textColor = .blackday
         return header
     }()
     
     private let addTrackerName: UITextField = {
         let addTrackerName = UITextField()
+        addTrackerName.translatesAutoresizingMaskIntoConstraints = false
         addTrackerName.placeholder = "Введите название трекера"
         addTrackerName.backgroundColor = .backgroundday
         addTrackerName.layer.cornerRadius = 16
@@ -48,7 +54,6 @@ final class HabitViewController: UIViewController {
         addTrackerName.keyboardType = .default
         addTrackerName.returnKeyType = .done
         addTrackerName.becomeFirstResponder()
-        addTrackerName.translatesAutoresizingMaskIntoConstraints = false
         return addTrackerName
     }()
     
@@ -58,7 +63,7 @@ final class HabitViewController: UIViewController {
         cancelButton.layer.borderWidth = 1.0
         cancelButton.layer.borderColor = UIColor.redtext.cgColor
         cancelButton.layer.cornerRadius = 16
-        cancelButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         cancelButton.setTitle("Отменить", for: .normal)
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
@@ -67,14 +72,13 @@ final class HabitViewController: UIViewController {
     
     private let trackersTableView: UITableView = {
         let trackersTableView = UITableView()
-        trackersTableView.layer.cornerRadius = 16
-        trackersTableView.separatorStyle = .none
         trackersTableView.translatesAutoresizingMaskIntoConstraints = false
         return trackersTableView
     }()
     
     private lazy var clearButton: UIButton = {
         let clearButton = UIButton(type: .custom)
+        clearButton.setImage(UIImage(named: "cleanKeyboard"), for: .normal)
         clearButton.frame = CGRect(x: 0, y: 0, width: 17, height: 17)
         clearButton.contentMode = .scaleAspectFit
         clearButton.addTarget(self, action: #selector(didTapClean), for: .touchUpInside)
@@ -91,7 +95,7 @@ final class HabitViewController: UIViewController {
         createButton.setTitleColor(.whiteday, for: .normal)
         createButton.backgroundColor = .greyYP
         createButton.layer.cornerRadius = 16
-        createButton.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
+        createButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         createButton.setTitle("Создать", for: .normal)
         createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
         createButton.translatesAutoresizingMaskIntoConstraints = false
@@ -99,63 +103,73 @@ final class HabitViewController: UIViewController {
         return createButton
     }()
     
-    private let scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.isScrollEnabled = true
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        return scrollView
-    }()
-    
     private let emojiCollectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.register(EmojiViewCell.self, forCellWithReuseIdentifier: "EmojiCell")
-        collectionView.register(EmojiHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: EmojiHeader.id)
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(HabitEmojiCell.self, forCellWithReuseIdentifier: "HabitEmojiCell")
+        collectionView.register(HabitEmojiHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HabitEmojiHeader.id)
         collectionView.allowsMultipleSelection = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
     private let colorCollectionView: UICollectionView = {
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.register(ColorViewCell.self, forCellWithReuseIdentifier: "ColorCell")
-        collectionView.register(ColorHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: ColorHeader.id)
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(HabitColorCell.self, forCellWithReuseIdentifier: "HabitColorCell")
+        collectionView.register(HabitColorHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HabitColorHeader.id)
         collectionView.allowsMultipleSelection = false
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Начальная настройка
+        
         view.backgroundColor = .whiteday
-        configureViews()
-        configureConstraints()
-        // Настройка делегатов и таблицы
+        addSubviews()
+        activateConstraints()
+        
+        setupTrackerNameTextField()
+        setupTrackersTableView()
+        setupEmojiCollectionView()
+        setupColorCollectionView()
+    }
+
+    private func setupTrackerNameTextField() {
         addTrackerName.delegate = self
+    }
+
+    private func setupTrackersTableView() {
         trackersTableView.delegate = self
         trackersTableView.dataSource = self
         trackersTableView.register(HabitViewCell.self, forCellReuseIdentifier: cellReuseIdentifier)
+        trackersTableView.layer.cornerRadius = 16
+        trackersTableView.separatorStyle = .none
+    }
+
+    private func setupEmojiCollectionView() {
         emojiCollectionView.dataSource = self
         emojiCollectionView.delegate = self
+        emojiCollectionView.translatesAutoresizingMaskIntoConstraints = false
+    }
+
+    private func setupColorCollectionView() {
         colorCollectionView.dataSource = self
         colorCollectionView.delegate = self
-        //        trackersTableView.layer.cornerRadius = 16
-        //        trackersTableView.separatorStyle = .none
+        colorCollectionView.translatesAutoresizingMaskIntoConstraints = false
     }
-    // MARK: - Конфигурация пользовательского интерфейса
-    // Добавление элементов пользовательского интерфейса в иерархию представлений
-    private func configureViews() {
+    
+    private func addSubviews() {
         view.addSubview(scrollView)
         scrollView.addSubview(header)
         scrollView.addSubview(addTrackerName)
         scrollView.addSubview(trackersTableView)
-        scrollView.addSubview(cancelButton)
-        scrollView.addSubview(createButton)
         scrollView.addSubview(emojiCollectionView)
         scrollView.addSubview(colorCollectionView)
+        scrollView.addSubview(createButton)
+        scrollView.addSubview(cancelButton)
     }
-    // Настройка ограничений автоматического макетирования
-    func configureConstraints() {
+    
+    private func activateConstraints() {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -170,19 +184,19 @@ final class HabitViewController: UIViewController {
             addTrackerName.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
             addTrackerName.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             trackersTableView.topAnchor.constraint(equalTo: addTrackerName.bottomAnchor, constant: 24),
-            trackersTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            trackersTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            trackersTableView.heightAnchor.constraint(equalToConstant: 149),
+            trackersTableView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            trackersTableView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
+            trackersTableView.heightAnchor.constraint(equalToConstant: 150),
             emojiCollectionView.topAnchor.constraint(equalTo: trackersTableView.bottomAnchor, constant: 32),
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 222),
             emojiCollectionView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 18),
             emojiCollectionView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -18),
-            emojiCollectionView.heightAnchor.constraint(equalToConstant: 222),
             colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 16),
+            colorCollectionView.heightAnchor.constraint(equalToConstant: 222),
             colorCollectionView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 18),
             colorCollectionView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -18),
-            colorCollectionView.heightAnchor.constraint(equalToConstant: 222),
             cancelButton.topAnchor.constraint(equalTo: colorCollectionView.bottomAnchor, constant: 16),
-            cancelButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            cancelButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 0),
             cancelButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
             cancelButton.trailingAnchor.constraint(equalTo: colorCollectionView.centerXAnchor, constant: -4),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
@@ -192,24 +206,24 @@ final class HabitViewController: UIViewController {
             createButton.leadingAnchor.constraint(equalTo: colorCollectionView.centerXAnchor, constant: 4)
         ])
     }
-    // MARK: - Обработчики действий кнопок
+    
     @objc private func didTapClean() {
-        // Действие для очистки текстового поля
         addTrackerName.text = ""
         clearButton.isHidden = true
     }
     
     @objc private func didTapCancelButton() {
-        // Действие для закрытия контроллера представления
         dismiss(animated: true)
     }
     
     @objc private func didTapCreateButton() {
-        // Действие для создания нового трекера и уведомления родительского контроллера
-        guard let text = addTrackerName.text, !text.isEmpty, let color = selectedColor, let emoji = selectedEmoji else {
+        guard let text = addTrackerName.text, !text.isEmpty,
+              let color = selectedColor,
+              let emoji = selectedEmoji else {
             return
         }
-        let newTracker = Tracker(trackerID: UUID(), title: text, color: color, emoji: emoji, schedule: self.selectedDays)
+        
+        let newTracker = Tracker(id: UUID(), title: text, color: color, emoji: emoji, schedule: self.selectedDays)
         trackersViewController?.appendTracker(tracker: newTracker)
         trackersViewController?.reload()
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
@@ -219,55 +233,53 @@ final class HabitViewController: UIViewController {
 // MARK: - SelectedDays
 extension HabitViewController: SelectedDays {
     func save(indicies: [Int]) {
-        // Реализация сохранения выбранных дней
         for index in indicies {
             self.selectedDays.append(Weekday.allCases[index])
+            self.trackersTableView.reloadData()
         }
     }
 }
 
 // MARK: - UITableViewDelegate
 extension HabitViewController: UITableViewDelegate {
-    // Устанавливаем высоту ячейки в таблице
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }
-    // Обрабатываем выбор ячейки
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 1 {
-            // Создаем экземпляр ScheduleViewController и устанавливаем свойство createTrackerViewController
             let scheduleViewController = ScheduleViewController()
             scheduleViewController.createTrackerViewController = self
-            // Показываем ScheduleViewController
             present(scheduleViewController, animated: true, completion: nil)
+            selectedDays = []
         }
-        // Снимаем выделение с выбранной ячейки
         trackersTableView.deselectRow(at: indexPath, animated: true)
     }
     
-    // Вызывается перед отображением ячейки
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        // Создаем и добавляем разделительную линию внизу ячейки
         let separatorInset: CGFloat = 16
         let separatorWidth = tableView.bounds.width - separatorInset * 2
         let separatorHeight: CGFloat = 1.0
         let separatorX = separatorInset
         let separatorY = cell.frame.height - separatorHeight
-        let separatorView = UIView(frame: CGRect(x: separatorX, y: separatorY, width: separatorWidth, height: separatorHeight))
-        separatorView.backgroundColor = .greyYP
-        cell.addSubview(separatorView)
+        
+        let isLastCell = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
+        
+        if !isLastCell {
+            let separatorView = UIView(frame: CGRect(x: separatorX, y: separatorY, width: separatorWidth, height: separatorHeight))
+            separatorView.backgroundColor = .greyYP
+            cell.addSubview(separatorView)
+        }
     }
 }
 
 // MARK: - UITableViewDataSource
 extension HabitViewController: UITableViewDataSource {
-    // Количество ячеек в секции
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
-    // Возвращаем ячейку для определенного индекса
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        // Создаем и конфигурируем ячейку для таблицы
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as? HabitViewCell else { return UITableViewCell() }
         // Обновляем содержимое ячейки в зависимости от индекса
         if indexPath.row == 0 {
@@ -281,11 +293,8 @@ extension HabitViewController: UITableViewDataSource {
 
 // MARK: - UITextFieldDelegate
 extension HabitViewController: UITextFieldDelegate {
-    // Вызывается при изменении текста в текстовом поле
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        // Скрываем или показываем кнопку очистки в зависимости от наличия текста в поле
         clearButton.isHidden = textField.text?.isEmpty ?? true
-        // Включаем или отключаем кнопку создания в зависимости от наличия текста в поле
         if textField.text?.isEmpty ?? false {
             createButton.isEnabled = false
             createButton.backgroundColor = .greyYP
@@ -294,9 +303,8 @@ extension HabitViewController: UITextFieldDelegate {
             createButton.backgroundColor = .blackday
         }
     }
-    // Вызывается при нажатии клавиши Return на клавиатуре
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // Завершаем редактирование текстового поля
         textField.resignFirstResponder()
         return true
     }
@@ -304,30 +312,27 @@ extension HabitViewController: UITextFieldDelegate {
 
 // MARK: - UICollectionViewDataSource
 extension HabitViewController: UICollectionViewDataSource {
-//    количество элементов (ячеек) в секции.
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 18
     }
     
-//    настраиваем ячейку для отображения эмодзи или цвета
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        // Создаем и настраиваем ячейки для emoji
         if collectionView == emojiCollectionView {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "EmojiCell", for: indexPath) as? EmojiViewCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HabitEmojiCell", for: indexPath) as? HabitEmojiCell else {
                 return UICollectionViewCell()
             }
-            let emojiIndex = indexPath.item % emojies.count
-            let selectedEmoji = emojies[emojiIndex]
+            let emojiIndex = indexPath.item % emoji.count
+            let selectedEmoji = emoji[emojiIndex]
             
             cell.emojiLabel.text = selectedEmoji
             cell.layer.cornerRadius = 16
             
             return cell
-            // Создаем и настраиваем ячейки для цвета
         } else if collectionView == colorCollectionView {
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ColorCell", for: indexPath) as? ColorViewCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HabitColorCell", for: indexPath) as? HabitColorCell else {
                 return UICollectionViewCell()
             }
+            
             let colorIndex = indexPath.item % colors.count
             let selectedColor = colors[colorIndex]
             
@@ -339,82 +344,76 @@ extension HabitViewController: UICollectionViewDataSource {
         return UICollectionViewCell()
     }
     
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        // Создаем и настраиваем заголовок для emoji
+    func collectionView(_ collectionView:UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
         if collectionView == emojiCollectionView {
-            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: EmojiHeader.id, for: indexPath) as? EmojiHeader else {
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HabitEmojiHeader.id, for: indexPath) as? HabitEmojiHeader else {
                 return UICollectionReusableView()
             }
             header.headerText = "Emoji"
             return header
-        // Создаем и настраиваем заголовок для цвета
         } else if collectionView == colorCollectionView {
-            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: ColorHeader.id, for: indexPath) as? ColorHeader else {
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: HabitColorHeader.id, for: indexPath) as? HabitColorHeader else {
                 return UICollectionReusableView()
             }
             header.headerText = "Цвет"
             return header
         }
+        
         return UICollectionReusableView()
     }
 }
 
 // MARK: - UICollectionViewDelegateFlowLayout
 extension HabitViewController: UICollectionViewDelegateFlowLayout {
-//    размер каждой ячейки в коллекции
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let collectionViewWidth = collectionView.bounds.width-36
-//        для создания шести ячеек в строке
-        let cellWidth = collectionViewWidth/6
+        let collectionViewWidth = collectionView.bounds.width - 36
+        let cellWidth = collectionViewWidth / 6
         return CGSize(width: cellWidth, height: cellWidth)
     }
-//    минимальный интервал между ячейками внутри одной строки
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 5
     }
-//    минимальный интервал между строками коллекции
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
-//    размер заголовка секции
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: collectionView.bounds.width, height: 18)
     }
-//    внутренние отступы для секции коллекции, устанавливаем только верхний отступ
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
     }
+    
 }
 
 // MARK: - UICollectionViewDelegate
 extension HabitViewController: UICollectionViewDelegate {
-//    Этот метод вызывается, когда пользователь выбирает элемент в коллекции
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {
-            // Обработка выбора в emojiCollectionView
-            let cell = collectionView.cellForItem(at: indexPath) as? EmojiViewCell
-            cell?.backgroundColor = .backgroundday
+            let cell = collectionView.cellForItem(at: indexPath) as? HabitEmojiCell
+            cell?.backgroundColor = .greybackgroundElement
+            
             selectedEmoji = cell?.emojiLabel.text
         } else if collectionView == colorCollectionView {
-            // Обработка выбора в colorCollectionView
-            let cell = collectionView.cellForItem(at: indexPath) as? ColorViewCell
+            let cell = collectionView.cellForItem(at: indexPath) as? HabitColorCell
             cell?.layer.borderWidth = 3
             cell?.layer.borderColor = cell?.colorView.backgroundColor?.withAlphaComponent(0.3).cgColor
+            
             selectedColor = cell?.colorView.backgroundColor
         }
     }
     
-//    Этот метод вызывается, когда пользователь снимает выбор с элемента в коллекции
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {
-            // Обработка снятия выбора в emojiCollectionView
-            let cell = collectionView.cellForItem(at: indexPath) as? EmojiViewCell
-            cell?.backgroundColor = .whitebackground
+            let cell = collectionView.cellForItem(at: indexPath) as? HabitEmojiCell
+            cell?.backgroundColor = .whiteday
         } else if collectionView == colorCollectionView {
-            // Обработка снятия выбора в colorCollectionView
-            let cell = collectionView.cellForItem(at: indexPath) as? ColorViewCell
+            let cell = collectionView.cellForItem(at: indexPath) as? HabitColorCell
             cell?.layer.borderWidth = 0
         }
     }
 }
-
