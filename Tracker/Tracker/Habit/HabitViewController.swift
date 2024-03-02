@@ -7,21 +7,22 @@
 
 import UIKit
 
-// MARK: - Протокол для действий с трекерами
 protocol TrackersActions {
-    func appendTracker(tracker: Tracker)
+    func appendTracker(tracker: Tracker, category: String?)
     func reload()
     func showFirstStubScreen()
 }
 
 final class HabitViewController: UIViewController {
     
-    var trackersViewController: TrackersActions?
+    var trackerScreenViewController: TrackersActions?
     let cellReuseIdentifier = "HabitViewController"
-
+    
+    private var selectedCategory: String?
     private var selectedColor: UIColor?
     private var selectedEmoji: String?
     private var selectedDays: [Weekday] = []
+    private let addCategoryViewController = CategoryViewController()
     
     private let colors: [UIColor] = UIColor.selectionColors
     private let emoji: [String] = String.selectionEmojies
@@ -65,7 +66,7 @@ final class HabitViewController: UIViewController {
         cancelButton.layer.cornerRadius = 16
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         cancelButton.setTitle("Отменить", for: .normal)
-        cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         return cancelButton
     }()
@@ -81,7 +82,7 @@ final class HabitViewController: UIViewController {
         clearButton.setImage(UIImage(named: "cleanKeyboard"), for: .normal)
         clearButton.frame = CGRect(x: 0, y: 0, width: 17, height: 17)
         clearButton.contentMode = .scaleAspectFit
-        clearButton.addTarget(self, action: #selector(didTapClean), for: .touchUpInside)
+        clearButton.addTarget(self, action: #selector(clearTextField), for: .touchUpInside)
         clearButton.isHidden = true
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 29, height: 17))
         paddingView.addSubview(clearButton)
@@ -97,7 +98,7 @@ final class HabitViewController: UIViewController {
         createButton.layer.cornerRadius = 16
         createButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         createButton.setTitle("Создать", for: .normal)
-        createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
+        createButton.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
         createButton.translatesAutoresizingMaskIntoConstraints = false
         createButton.isEnabled = false
         return createButton
@@ -207,16 +208,16 @@ final class HabitViewController: UIViewController {
         ])
     }
     
-    @objc private func didTapClean() {
+    @objc private func clearTextField() {
         addTrackerName.text = ""
         clearButton.isHidden = true
     }
     
-    @objc private func didTapCancelButton() {
+    @objc private func cancelButtonTapped() {
         dismiss(animated: true)
     }
     
-    @objc private func didTapCreateButton() {
+    @objc private func createButtonTapped() {
         guard let text = addTrackerName.text, !text.isEmpty,
               let color = selectedColor,
               let emoji = selectedEmoji else {
@@ -224,8 +225,9 @@ final class HabitViewController: UIViewController {
         }
         
         let newTracker = Tracker(id: UUID(), title: text, color: color, emoji: emoji, schedule: self.selectedDays)
-        trackersViewController?.appendTracker(tracker: newTracker)
-        trackersViewController?.reload()
+        trackerScreenViewController?.appendTracker(tracker: newTracker, category: self.selectedCategory)
+        addCategoryViewController.viewModel.addTrackerToCategory(to: self.selectedCategory, tracker: newTracker)
+        trackerScreenViewController?.reload()
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
 }
@@ -247,7 +249,13 @@ extension HabitViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.row == 1 {
+        if indexPath.row == 0 {
+            addCategoryViewController.viewModel.$selectedCategory.bind { [weak self] categoryName in
+                self?.selectedCategory = categoryName?.header
+                self?.trackersTableView.reloadData()
+            }
+            present(addCategoryViewController, animated: true, completion: nil)
+        } else if indexPath.row == 1 {
             let scheduleViewController = ScheduleViewController()
             scheduleViewController.createTrackerViewController = self
             present(scheduleViewController, animated: true, completion: nil)
@@ -281,12 +289,31 @@ extension HabitViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseIdentifier, for: indexPath) as? HabitViewCell else { return UITableViewCell() }
-        // Обновляем содержимое ячейки в зависимости от индекса
+        
         if indexPath.row == 0 {
-            cell.update(with: "Категория")
+            var title = "Категория"
+            if let selectedCategory = selectedCategory {
+                title += "\n" + selectedCategory
+            }
+            cell.update(with: title)
         } else if indexPath.row == 1 {
-            cell.update(with: "Расписание")
+            var subtitle = ""
+            
+            if !selectedDays.isEmpty {
+                if selectedDays.count == 7 {
+                    subtitle = "Каждый день"
+                } else {
+                    subtitle = selectedDays.map { $0.shortName }.joined(separator: ", ")
+                }
+            }
+            
+            if !subtitle.isEmpty {
+                cell.update(with: "Расписание\n" + subtitle)
+            } else {
+                cell.update(with: "Расписание")
+            }
         }
+        
         return cell
     }
 }
@@ -395,7 +422,7 @@ extension HabitViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {
             let cell = collectionView.cellForItem(at: indexPath) as? HabitEmojiCell
-            cell?.backgroundColor = .greybackgroundElement
+            cell?.backgroundColor = .backgroundday
             
             selectedEmoji = cell?.emojiLabel.text
         } else if collectionView == colorCollectionView {

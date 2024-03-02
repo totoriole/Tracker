@@ -11,7 +11,7 @@ final class IrregularEventViewController: UIViewController {
     
     let irregularEventCellReuseIdentifier = "IrregularEventTableViewCell"
     var trackerScreenViewController: TrackersActions?
-    private let trackerCategoryStore = TrackerCategoryStore()
+    private let addCategoryViewController = CategoryViewController()
     private var selectedCategory: String?
     private var selectedColor: UIColor?
     private var selectedEmoji: String?
@@ -216,12 +216,8 @@ final class IrregularEventViewController: UIViewController {
             return
         }
         let newEvent = Tracker(id: UUID(), title: text, color: color, emoji: emoji, schedule: Weekday.allCases)
-        trackerScreenViewController?.appendTracker(tracker: newEvent)
-        do {
-            try trackerCategoryStore.addNewTrackerToCategory(to: testCategory, tracker: newEvent)
-        } catch {
-            print("Error create new tracker to category: \(ErrorCreateNewTracker.errorCreatNewEvent)")
-        }
+        trackerScreenViewController?.appendTracker(tracker: newEvent, category: self.selectedCategory)
+        addCategoryViewController.viewModel.addTrackerToCategory(to: self.selectedCategory, tracker: newEvent)
         trackerScreenViewController?.reload()
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
@@ -234,7 +230,13 @@ extension IrregularEventViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let addCategoryViewController = CategoryViewController()
+        addCategoryViewController.viewModel.$selectedCategory.bind { [weak self] categoryName in
+            self?.selectedCategory = categoryName?.header
+            self?.irregularEventTableView.reloadData()
+        }
         irregularEventTableView.deselectRow(at: indexPath, animated: true)
+        present(addCategoryViewController, animated: true, completion: nil)
     }
 }
 
@@ -246,8 +248,11 @@ extension IrregularEventViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: irregularEventCellReuseIdentifier, for: indexPath) as! IrregularEventCell
-        // Используем ячейку IrregularEventCell, и устанавливаем текст "Категория"
-        cell.titleLabel.text = "Категория"
+            var title = "Категория"
+            if let selectedCategory = selectedCategory {
+                title += "\n" + selectedCategory
+            }
+            cell.update(with: title)
             return cell
     }
 }
@@ -356,7 +361,7 @@ extension IrregularEventViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == emojiCollectionView {
             let cell = collectionView.cellForItem(at: indexPath) as? EventEmojiCell
-            cell?.backgroundColor = .greybackgroundElement
+            cell?.backgroundColor = .backgroundday
             
             selectedEmoji = cell?.emojiLabel.text
         } else if collectionView == colorCollectionView {

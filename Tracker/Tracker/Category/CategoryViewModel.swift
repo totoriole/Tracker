@@ -1,42 +1,42 @@
-////
-////  CategoryViewModel.swift
-////  Tracker
-////
-////  Created by Bumbie on 27.02.2023.
-////
 //
-//import UIKit
-//import CoreData
+//  CategoryViewModel.swift
+//  Tracker
 //
-//final class CategoryViewModel {
-//        
-//    static let shared = CategoryViewModel()
-//    private var categoryStore = TrackerCategoryStore.shared
-//    private (set) var categories: [TrackerCategory] = []
-//    
-//    @Observable
-//    private (set) var selectedCategory: TrackerCategory?
-//    
-//    init() {
-//        categoryStore.delegate = self
-//        self.categories = categoryStore.trackerCategories
-//    }
-//    
-//    func addCategory(_ toAdd: String) {
-//        try! self.categoryStore.addNewCategory(TrackerCategory(header: toAdd, trackers: []))
-//    }
-//    
-//    func addTrackerToCategory(to header: String?, tracker: Tracker) {
-//        try! self.categoryStore.addTrackerToCategory(to: header, tracker: tracker)
-//    }
-//    
-//    func selectCategory(_ at: Int) {
-//        self.selectedCategory = self.categories[at]
-//    }
-//}
+//  Created by Bumbie on 02.03.2023.
 //
-//extension CategoryViewModel: TrackerCategoryStoreDelegate {
-//    func storeCategory() {
-//        self.categories = categoryStore.trackerCategories
-//    }
-//}
+
+import UIKit
+import CoreData
+
+final class CategoryViewModel {
+        
+    static let shared = CategoryViewModel()
+    private var categoryStore = TrackerCategoryStore.shared
+    private (set) var categories: [TrackerCategory] = []
+    
+    @Observable
+    private (set) var selectedCategory: TrackerCategory?
+    
+    init() {
+        categoryStore.delegate = self
+        self.categories = categoryStore.trackerCategories
+    }
+    
+    func addCategory(_ toAdd: String) {
+        try! self.categoryStore.addNewCategory(TrackerCategory(header: toAdd, trackers: []))
+    }
+    
+    func addTrackerToCategory(to header: String?, tracker: Tracker) {
+        try! self.categoryStore.addNewTrackerToCategory(to: header, tracker: tracker)
+    }
+    
+    func selectCategory(_ at: Int) {
+        self.selectedCategory = self.categories[at]
+    }
+}
+
+extension CategoryViewModel: TrackerCategoryStoreDelegate {
+    func storeCategory() {
+        self.categories = categoryStore.trackerCategories
+    }
+}
