@@ -74,13 +74,3 @@ enum Weekday: Int, CaseIterable {
         return first < second
     }
 }
-
-struct TrackerCategory {
-    let header: String
-    let trackers: [Tracker]
-}
-
-struct TrackerRecord {
-    let id: UUID
-    let date: Date
-}
