@@ -25,7 +25,6 @@ final class TrackerScreenViewController: UIViewController {
     
     private let header: UILabel = {
         let header = UILabel()
-        header.translatesAutoresizingMaskIntoConstraints = false
         header.text = "Трекеры"
         header.textColor = .blackday
         header.font = UIFont.systemFont(ofSize: 34, weight: .bold)
@@ -34,14 +33,12 @@ final class TrackerScreenViewController: UIViewController {
     
     private let searchTrackers: UISearchTextField = {
         let searchTrackers = UISearchTextField()
-        searchTrackers.translatesAutoresizingMaskIntoConstraints = false
         searchTrackers.placeholder = "Поиск"
         return searchTrackers
     }()
     
     private lazy var datePicker: UIDatePicker = {
         let datePicker = UIDatePicker()
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
         datePicker.preferredDatePickerStyle = .compact
         datePicker.datePickerMode = .date
         datePicker.locale = Locale(identifier: "ru_Ru")
@@ -52,14 +49,12 @@ final class TrackerScreenViewController: UIViewController {
     
     private let emptyTrackersLogo: UIImageView = {
         let emptyTrackersLogo = UIImageView()
-        emptyTrackersLogo.translatesAutoresizingMaskIntoConstraints = false
         emptyTrackersLogo.image = UIImage(named: "Empty trackers")
         return emptyTrackersLogo
     }()
     
     private let emptyTrackersText: UILabel = {
         let emptyTrackersText = UILabel()
-        emptyTrackersText.translatesAutoresizingMaskIntoConstraints = false
         emptyTrackersText.text = "Что будем отслеживать?"
         emptyTrackersText.textColor = .blackday
         emptyTrackersText.font = UIFont.systemFont(ofSize: 12, weight: .medium)
@@ -68,14 +63,12 @@ final class TrackerScreenViewController: UIViewController {
     
     private let emptySearch: UIImageView = {
         let emptySearch = UIImageView()
-        emptySearch.translatesAutoresizingMaskIntoConstraints = false
         emptySearch.image = UIImage(named: "empty search")
         return emptySearch
     }()
     
     private let emptySearchText: UILabel = {
         let emptySearchText = UILabel()
-        emptySearchText.translatesAutoresizingMaskIntoConstraints = false
         emptySearchText.text = "Ничего не найдено"
         emptySearchText.textColor = .blackday
         emptySearchText.font = UIFont.systemFont(ofSize: 12, weight: .medium)
@@ -85,7 +78,6 @@ final class TrackerScreenViewController: UIViewController {
     private lazy var addTrackerButton: UIButton = {
         let addTrackerButton = UIButton()
         addTrackerButton.setImage(UIImage(named: "Add tracker"), for: .normal)
-        addTrackerButton.translatesAutoresizingMaskIntoConstraints = false
         addTrackerButton.addTarget(self, action: #selector(didTapAddTracker), for: .touchUpInside)
         return addTrackerButton
     }()
@@ -94,7 +86,6 @@ final class TrackerScreenViewController: UIViewController {
         super.viewDidLoad()
         selectCurrentDay()
         view.backgroundColor = .white
-        addSubviews()
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: addTrackerButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
@@ -111,9 +102,13 @@ final class TrackerScreenViewController: UIViewController {
         collectionView.delegate = self
         collectionView.register(TrackerCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.register(HeaderSectionView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: HeaderSectionView.id)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.allowsMultipleSelection = false
         searchTrackers.delegate = self
+        
+        [header, searchTrackers, datePicker, emptyTrackersLogo, emptyTrackersText, emptySearch, emptySearchText, addTrackerButton, collectionView].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         NSLayoutConstraint.activate([
             header.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -138,18 +133,6 @@ final class TrackerScreenViewController: UIViewController {
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
         ])
-    }
-    
-    private func addSubviews() {
-        view.addSubview(header)
-        view.addSubview(addTrackerButton)
-        view.addSubview(searchTrackers)
-        view.addSubview(datePicker)
-        view.addSubview(emptyTrackersLogo)
-        view.addSubview(emptyTrackersText)
-        view.addSubview(emptySearch)
-        view.addSubview(emptySearchText)
-        view.addSubview(collectionView)
     }
     
     @objc private func didTapAddTracker() {

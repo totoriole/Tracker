@@ -13,8 +13,6 @@ final class AddTrackerViewController: UIViewController {
     
     private lazy var header: UILabel = {
         let header = UILabel()
-        view.addSubview(header)
-        header.translatesAutoresizingMaskIntoConstraints = false
         header.text = "Создание трекера"
         header.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         header.textColor = .blackday
@@ -23,27 +21,23 @@ final class AddTrackerViewController: UIViewController {
     
     private lazy var habitButton: UIButton = {
         let habitButton = UIButton(type: .custom)
-        view.addSubview(habitButton)
         habitButton.setTitle("Привычка", for: .normal)
         habitButton.setTitleColor(.whiteday, for: .normal)
         habitButton.backgroundColor = .blackday
         habitButton.layer.cornerRadius = 16
         habitButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         habitButton.addTarget(self, action: #selector(habitButtonTapped), for: .touchUpInside)
-        habitButton.translatesAutoresizingMaskIntoConstraints = false
         return habitButton
     }()
     
     private lazy var irregularButton: UIButton = {
         let irregularButton = UIButton(type: .custom)
-        view.addSubview(irregularButton)
         irregularButton.setTitleColor(.whiteday, for: .normal)
         irregularButton.backgroundColor = .blackday
         irregularButton.layer.cornerRadius = 16
         irregularButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         irregularButton.setTitle("Нерегулярное событие", for: .normal)
         irregularButton.addTarget(self, action: #selector(irregularButtonTapped), for: .touchUpInside)
-        irregularButton.translatesAutoresizingMaskIntoConstraints = false
         return irregularButton
     }()
     
@@ -51,6 +45,11 @@ final class AddTrackerViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .whiteday
+        
+        [header, habitButton, irregularButton].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         NSLayoutConstraint.activate([
             view.topAnchor.constraint(equalTo: view.topAnchor),

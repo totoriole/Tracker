@@ -18,7 +18,6 @@ final class CreateCategoryViewController: UIViewController {
     
     private let header: UILabel = {
         let header = UILabel()
-        header.translatesAutoresizingMaskIntoConstraints = false
         header.text = "Новая категория"
         header.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         header.textColor = .blackday
@@ -27,7 +26,6 @@ final class CreateCategoryViewController: UIViewController {
     
     private let addCategoryName: UITextField = {
         let addCategoryName = UITextField()
-        addCategoryName.translatesAutoresizingMaskIntoConstraints = false
         addCategoryName.placeholder = "Введите название категории"
         addCategoryName.backgroundColor = .backgroundday
         addCategoryName.layer.cornerRadius = 16
@@ -62,7 +60,6 @@ final class CreateCategoryViewController: UIViewController {
         doneButton.layer.cornerRadius = 16
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
-        doneButton.translatesAutoresizingMaskIntoConstraints = false
         doneButton.isEnabled = false
         return doneButton
     }()
@@ -71,7 +68,10 @@ final class CreateCategoryViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .whiteday
-        addSubviews()
+        [header, addCategoryName, doneButton].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         addCategoryName.delegate = self
         
         NSLayoutConstraint.activate([
@@ -91,12 +91,6 @@ final class CreateCategoryViewController: UIViewController {
             doneButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             doneButton.heightAnchor.constraint(equalToConstant: 60)
         ])
-    }
-    
-    private func addSubviews() {
-        view.addSubview(header)
-        view.addSubview(addCategoryName)
-        view.addSubview(doneButton)
     }
     
     @objc private func doneButtonTapped() {

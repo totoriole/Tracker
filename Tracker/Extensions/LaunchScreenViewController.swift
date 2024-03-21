@@ -1,35 +1,23 @@
 //
-//  LaunchScreenViewController.swift
+//  LaunchScreenTracker.swift
 //  Tracker
 //
-//  Created by Margarita Pitinova on 05.07.2023.
+//  Created by Toto Tsipun on 26.10.2023.
 //
 
 import UIKit
 
-class LaunchScreenViewController: UIViewController {
+final class LaunchScreenTracker: UIViewController {
+    
+    private let image = UIImage(named: "LogoLaunchScreen")
+    private lazy var logoImageView: UIImageView = {
+        let imageView = UIImageView(image: image)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        return imageView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupLaunchScreen()
-    }
-    
-    func setupLaunchScreen() {
-        let launchScreenView = UIView(frame: self.view.bounds)
-        launchScreenView.backgroundColor = UIColor.ypBlue
-        
-        let logoImageView = UIImageView(image: UIImage(named: "Start logo"))
-        logoImageView.contentMode = .scaleAspectFit
-        logoImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        launchScreenView.addSubview(logoImageView)
-        
-        NSLayoutConstraint.activate([
-            logoImageView.centerXAnchor.constraint(equalTo: launchScreenView.centerXAnchor),
-            logoImageView.centerYAnchor.constraint(equalTo: launchScreenView.centerYAnchor),
-            logoImageView.widthAnchor.constraint(equalToConstant: 91),
-            logoImageView.heightAnchor.constraint(equalToConstant: 94)
-        ])
-        
-        self.view.addSubview(launchScreenView)
+
     }
 }

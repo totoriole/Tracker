@@ -14,7 +14,22 @@ protocol TrackerRecordStoreDelegate: AnyObject {
 
 final class TrackerRecordStore: NSObject {
     private var context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData>!
+    private lazy var fetchedResultsController: NSFetchedResultsController<TrackerRecordCoreData> = {
+        let fetch = TrackerRecordCoreData.fetchRequest()
+        fetch.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerRecordCoreData.id, ascending: true)
+        ]
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetch,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        controller.delegate = self
+        self.fetchedResultsController = controller
+        try? controller.performFetch()
+        return controller
+    }()
     private let uiColorMarshalling = UIColorMarshalling()
     
     weak var delegate: TrackerRecordStoreDelegate?
@@ -28,27 +43,17 @@ final class TrackerRecordStore: NSObject {
     }
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).context
-        try! self.init(context: context)
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            self.init()
+            return
+        }
+        let context = appDelegate.persistentContainer.viewContext
+        self.init(context: context)
     }
     
-    init(context: NSManagedObjectContext) throws {
+    init(context: NSManagedObjectContext) {
         self.context = context
         super.init()
-        
-        let fetch = TrackerRecordCoreData.fetchRequest()
-        fetch.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerRecordCoreData.id, ascending: true)
-        ]
-        let controller = NSFetchedResultsController(
-            fetchRequest: fetch,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        controller.delegate = self
-        self.fetchedResultsController = controller
-        try controller.performFetch()
     }
     
     func addNewTrackerRecord(_ trackerRecord: TrackerRecord) throws {

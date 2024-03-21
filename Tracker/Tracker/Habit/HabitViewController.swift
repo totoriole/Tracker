@@ -29,14 +29,12 @@ final class HabitViewController: UIViewController {
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.isScrollEnabled = true
         return scrollView
     }()
     
     private let header: UILabel = {
         let header = UILabel()
-        header.translatesAutoresizingMaskIntoConstraints = false
         header.text = "Новая привычка"
         header.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         header.textColor = .blackday
@@ -45,7 +43,6 @@ final class HabitViewController: UIViewController {
     
     private let addTrackerName: UITextField = {
         let addTrackerName = UITextField()
-        addTrackerName.translatesAutoresizingMaskIntoConstraints = false
         addTrackerName.placeholder = "Введите название трекера"
         addTrackerName.backgroundColor = .backgroundday
         addTrackerName.layer.cornerRadius = 16
@@ -67,13 +64,11 @@ final class HabitViewController: UIViewController {
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         cancelButton.setTitle("Отменить", for: .normal)
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
-        cancelButton.translatesAutoresizingMaskIntoConstraints = false
         return cancelButton
     }()
     
     private let trackersTableView: UITableView = {
         let trackersTableView = UITableView()
-        trackersTableView.translatesAutoresizingMaskIntoConstraints = false
         return trackersTableView
     }()
     
@@ -99,7 +94,6 @@ final class HabitViewController: UIViewController {
         createButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         createButton.setTitle("Создать", for: .normal)
         createButton.addTarget(self, action: #selector(createButtonTapped), for: .touchUpInside)
-        createButton.translatesAutoresizingMaskIntoConstraints = false
         createButton.isEnabled = false
         return createButton
     }()
@@ -128,7 +122,9 @@ final class HabitViewController: UIViewController {
         view.backgroundColor = .whiteday
         addSubviews()
         activateConstraints()
-        
+        [scrollView, header, addTrackerName, cancelButton, trackersTableView, createButton, emojiCollectionView, colorCollectionView].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         setupTrackerNameTextField()
         setupTrackersTableView()
         setupEmojiCollectionView()
@@ -150,13 +146,11 @@ final class HabitViewController: UIViewController {
     private func setupEmojiCollectionView() {
         emojiCollectionView.dataSource = self
         emojiCollectionView.delegate = self
-        emojiCollectionView.translatesAutoresizingMaskIntoConstraints = false
     }
 
     private func setupColorCollectionView() {
         colorCollectionView.dataSource = self
         colorCollectionView.delegate = self
-        colorCollectionView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func addSubviews() {

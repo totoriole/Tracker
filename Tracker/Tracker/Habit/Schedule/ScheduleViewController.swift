@@ -13,12 +13,11 @@ protocol SelectedDays {
 
 final class ScheduleViewController: UIViewController {
     
-    let scheduleCellReuseIdentifier = "ScheduleTableViewCell"
+    private let scheduleCellReuseIdentifier = "ScheduleTableViewCell"
     var createTrackerViewController: SelectedDays?
     
     private let header: UILabel = {
         let header = UILabel()
-        header.translatesAutoresizingMaskIntoConstraints = false
         header.text = "Расписание"
         header.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         header.textColor = .blackday
@@ -27,7 +26,6 @@ final class ScheduleViewController: UIViewController {
     
     private let scheduleTableView: UITableView = {
         let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
     
@@ -39,7 +37,6 @@ final class ScheduleViewController: UIViewController {
         doneScheduleButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         doneScheduleButton.setTitle("Готово", for: .normal)
         doneScheduleButton.addTarget(self, action: #selector(doneScheduleButtonTapped), for: .touchUpInside)
-        doneScheduleButton.translatesAutoresizingMaskIntoConstraints = false
         return doneScheduleButton
     }()
     
@@ -47,7 +44,11 @@ final class ScheduleViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .whiteday
-        addSubviews()
+
+        [header, scheduleTableView, doneScheduleButton].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         
         scheduleTableView.delegate = self
         scheduleTableView.dataSource = self
@@ -71,12 +72,6 @@ final class ScheduleViewController: UIViewController {
             doneScheduleButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -50),
             doneScheduleButton.heightAnchor.constraint(equalToConstant: 60)
         ])
-    }
-    
-    private func addSubviews() {
-        view.addSubview(header)
-        view.addSubview(scheduleTableView)
-        view.addSubview(doneScheduleButton)
     }
     
     @objc private func doneScheduleButtonTapped() {

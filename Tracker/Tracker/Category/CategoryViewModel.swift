@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import CoreData
 
 final class CategoryViewModel {
         
@@ -23,11 +22,19 @@ final class CategoryViewModel {
     }
     
     func addCategory(_ toAdd: String) {
-        try! self.categoryStore.addNewCategory(TrackerCategory(header: toAdd, trackers: []))
+        do {
+            try self.categoryStore.addNewCategory(TrackerCategory(header: toAdd, trackers: []))
+        } catch {
+            print("Error add new category: \(error.localizedDescription)")
+        }
     }
     
     func addTrackerToCategory(to header: String?, tracker: Tracker) {
-        try! self.categoryStore.addNewTrackerToCategory(to: header, tracker: tracker)
+        do {
+            try self.categoryStore.addNewTrackerToCategory(to: header, tracker: tracker)
+        } catch {
+            print("Error add new tracker to category: \(error.localizedDescription)")
+        }
     }
     
     func selectCategory(_ at: Int) {

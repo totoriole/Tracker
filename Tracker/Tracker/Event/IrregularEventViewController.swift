@@ -22,14 +22,12 @@ final class IrregularEventViewController: UIViewController {
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.isScrollEnabled = true
         return scrollView
     }()
     
     private let header: UILabel = {
         let header = UILabel()
-        header.translatesAutoresizingMaskIntoConstraints = false
         header.text = "Новое нерегулярное событие"
         header.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         header.textColor = .blackday
@@ -38,7 +36,6 @@ final class IrregularEventViewController: UIViewController {
     
     private let addEventName: UITextField = {
         let addTrackerName = UITextField()
-        addTrackerName.translatesAutoresizingMaskIntoConstraints = false
         addTrackerName.placeholder = "Введите название трекера"
         addTrackerName.backgroundColor = .backgroundday
         addTrackerName.layer.cornerRadius = 16
@@ -53,7 +50,6 @@ final class IrregularEventViewController: UIViewController {
     
     private let irregularEventTableView: UITableView = {
         let trackersTableView = UITableView()
-        trackersTableView.translatesAutoresizingMaskIntoConstraints = false
         return trackersTableView
     }()
     
@@ -66,7 +62,6 @@ final class IrregularEventViewController: UIViewController {
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         cancelButton.setTitle("Отменить", for: .normal)
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
-        cancelButton.translatesAutoresizingMaskIntoConstraints = false
         return cancelButton
     }()
     
@@ -92,7 +87,6 @@ final class IrregularEventViewController: UIViewController {
         createButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         createButton.setTitle("Создать", for: .normal)
         createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
-        createButton.translatesAutoresizingMaskIntoConstraints = false
         createButton.isEnabled = false
         return createButton
     }()
@@ -121,7 +115,9 @@ final class IrregularEventViewController: UIViewController {
         view.backgroundColor = .whiteday
         addSubviews()
         activateConstraints()
-        
+        [scrollView, header, addEventName, irregularEventTableView, cancelButton, createButton, emojiCollectionView, colorCollectionView].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
         setupEventNameTextField()
         setupIrregularEventTableView()
         setupEmojiCollectionView()
@@ -143,13 +139,11 @@ final class IrregularEventViewController: UIViewController {
     private func setupEmojiCollectionView() {
         emojiCollectionView.dataSource = self
         emojiCollectionView.delegate = self
-        emojiCollectionView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func setupColorCollectionView() {
         colorCollectionView.dataSource = self
         colorCollectionView.delegate = self
-        colorCollectionView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func addSubviews() {

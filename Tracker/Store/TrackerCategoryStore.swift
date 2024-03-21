@@ -16,7 +16,22 @@ final class TrackerCategoryStore: NSObject {
     static let shared = TrackerCategoryStore()
     
     private var context: NSManagedObjectContext
-    private var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData>!
+    private lazy var fetchedResultsController: NSFetchedResultsController<TrackerCategoryCoreData> = {
+        let fetch = TrackerCategoryCoreData.fetchRequest()
+        fetch.sortDescriptors = [
+            NSSortDescriptor(keyPath: \TrackerCategoryCoreData.header, ascending: true)
+        ]
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetch,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        controller.delegate = self
+        self.fetchedResultsController = controller
+        try? controller.performFetch()
+        return controller
+    }()
     private let uiColorMarshalling = UIColorMarshalling()
     private let trackerStore = TrackerStore()
     
@@ -31,27 +46,17 @@ final class TrackerCategoryStore: NSObject {
     }
     
     convenience override init() {
-        let context = (UIApplication.shared.delegate as! AppDelegate).context
-        try! self.init(context: context)
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            self.init()
+            return
+        }
+        let context = appDelegate.persistentContainer.viewContext
+        self.init(context: context)
     }
     
-    init(context: NSManagedObjectContext) throws {
+    init(context: NSManagedObjectContext) {
         self.context = context
         super.init()
-        
-        let fetch = TrackerCategoryCoreData.fetchRequest()
-        fetch.sortDescriptors = [
-            NSSortDescriptor(keyPath: \TrackerCategoryCoreData.header, ascending: true)
-        ]
-        let controller = NSFetchedResultsController(
-            fetchRequest: fetch,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-        controller.delegate = self
-        self.fetchedResultsController = controller
-        try controller.performFetch()
     }
     
     func addNewCategory(_ category: TrackerCategory) throws {
@@ -68,7 +73,6 @@ final class TrackerCategoryStore: NSObject {
         fromDb.trackers = trackerCategories.first {
             $0.header == header
         }?.trackers.map { $0.id }
-        print(type(of: fromDb.trackers))
         fromDb.trackers?.append(tracker.id)
         try context.save()
     }

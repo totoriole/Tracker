@@ -15,14 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
     
-//    // MARK: UISceneSession Lifecycle
-//    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-//        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-//    }
-//    
-//    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-//    }
-    
     // MARK: - Core Data stack
     // Создаем контейнер для модели, хранилища данных
     lazy var persistentContainer: NSPersistentContainer = {

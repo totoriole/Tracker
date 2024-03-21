@@ -22,20 +22,18 @@ final class TabBarController: UITabBarController {
     private func configureViews() {
         
         tabBar.tintColor = .blueBground
-        //        tabBar.tintColor = .backgroundElement
         tabBar.backgroundColor = .whiteday
-        
-        tabBar.layer.borderColor = UIColor(named: "BackgroundElements")?.cgColor
-        tabBar.layer.borderWidth = 1
+        tabBar.layer.borderColor = UIColor(named: "Grey")?.cgColor
+        tabBar.layer.borderWidth = 0.5
         tabBar.layer.masksToBounds = true
         
         let trackerScreenViewController = UINavigationController(rootViewController: TrackerScreenViewController())
-        trackerScreenViewController.tabBarItem = UITabBarItem(title: "",
+        trackerScreenViewController.tabBarItem = UITabBarItem(title: "Трекеры",
                                                               image: UIImage(named: "TrackersIcons"),
                                                               selectedImage: nil)
         
         let statisticScreenViewController = UINavigationController(rootViewController: StatisticScreenViewController())
-        statisticScreenViewController.tabBarItem = UITabBarItem(title: "",
+        statisticScreenViewController.tabBarItem = UITabBarItem(title: "Статистика",
                                                                 image: UIImage(named: "StatisticIcons"),
                                                                 selectedImage: nil)
         

@@ -14,7 +14,6 @@ final class CategoryViewController: UIViewController {
     
     private let header: UILabel = {
         let header = UILabel()
-        header.translatesAutoresizingMaskIntoConstraints = false
         header.text = "Категория"
         header.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         header.textColor = .blackday
@@ -23,14 +22,12 @@ final class CategoryViewController: UIViewController {
     
     private let emptyCategoryLogo: UIImageView = {
         let emptyTrackersLogo = UIImageView()
-        emptyTrackersLogo.translatesAutoresizingMaskIntoConstraints = false
         emptyTrackersLogo.image = UIImage(named: "Empty trackers")
         return emptyTrackersLogo
     }()
     
     private let emptyCategoryText: UILabel = {
         let emptyTrackersText = UILabel()
-        emptyTrackersText.translatesAutoresizingMaskIntoConstraints = false
         emptyTrackersText.text = "Привычки и события можно\nобъединить по смыслу"
         emptyTrackersText.textColor = .blackday
         emptyTrackersText.font = UIFont.systemFont(ofSize: 12, weight: .medium)
@@ -48,7 +45,6 @@ final class CategoryViewController: UIViewController {
         habitButton.layer.cornerRadius = 16
         habitButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         habitButton.addTarget(self, action: #selector(addCategoryTapped), for: .touchUpInside)
-        habitButton.translatesAutoresizingMaskIntoConstraints = false
         return habitButton
     }()
     
@@ -56,7 +52,6 @@ final class CategoryViewController: UIViewController {
         let categoriesTableView = UITableView()
         categoriesTableView.separatorStyle = .none
         categoriesTableView.layer.cornerRadius = 16
-        categoriesTableView.translatesAutoresizingMaskIntoConstraints = false
         categoriesTableView.isHidden = true
         return categoriesTableView
     }()
@@ -65,7 +60,10 @@ final class CategoryViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = .whiteday
-        addSubviews()
+        [header, emptyCategoryLogo, emptyCategoryText, addCategory, categoriesTableView].forEach {
+            $0.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview($0)
+        }
         setupTrackersTableView()
         
         NSLayoutConstraint.activate([
@@ -90,14 +88,6 @@ final class CategoryViewController: UIViewController {
             addCategory.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             addCategory.heightAnchor.constraint(equalToConstant: 60)
         ])
-    }
-    
-    private func addSubviews() {
-        view.addSubview(header)
-        view.addSubview(emptyCategoryLogo)
-        view.addSubview(emptyCategoryText)
-        view.addSubview(addCategory)
-        view.addSubview(categoriesTableView)
     }
     
     private func setupTrackersTableView() {
@@ -149,7 +139,8 @@ extension CategoryViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+            guard let self = self else { return }
             self.dismiss(animated: true, completion: nil)
         }
     }
