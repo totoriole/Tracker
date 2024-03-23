@@ -70,15 +70,27 @@ final class TrackerStore: NSObject {
     }
     
     func tracker(from trackerCoreData: TrackerCoreData) throws -> Tracker {
-        guard let id = trackerCoreData.id,
-              let emoji = trackerCoreData.emoji,
-              let color = uiColorMarshalling.color(from: trackerCoreData.color ?? ""),
-              let title = trackerCoreData.title,
-              let schedule = trackerCoreData.schedule
-        else {
-            fatalError()
+        guard let id = trackerCoreData.id else {
+            throw TrackerStoreError.decodingErrorId
         }
-        return Tracker(id: id, title: title, color: color, emoji: emoji, schedule: schedule.map({ Weekday(rawValue: $0)!}))
+        guard let emoji = trackerCoreData.emoji else {
+            throw TrackerStoreError.decodingErrorEmoji
+        }
+        guard let color = uiColorMarshalling.color(from: trackerCoreData.color ?? "") else {
+            throw TrackerStoreError.decodingErrorColor
+        }
+        guard let title = trackerCoreData.title else {
+            throw TrackerStoreError.decodingErrorTitle
+        }
+        guard let schedule = trackerCoreData.schedule else {
+            throw TrackerStoreError.decodingErrorSchedule
+        }
+        // Преобразуем массив строк в массив Weekday с использованием опционального связывания
+            let weekdays: [Weekday]? = schedule.compactMap { weekdayString in
+                return Weekday(rawValue: weekdayString)
+            }
+        
+        return Tracker(id: id, title: title, color: color, emoji: emoji, schedule: weekdays)
     }
 }
 
@@ -86,4 +98,14 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.store()
     }
+}
+
+
+enum TrackerStoreError: Error {
+    case decodingErrorId
+    case decodingErrorTitle
+    case decodingErrorColor
+    case decodingErrorEmoji
+    case decodingErrorSchedule
+    case decodingErrorInvalid
 }

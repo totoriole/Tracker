@@ -201,27 +201,32 @@ extension TrackerScreenViewController: UITextFieldDelegate {
 extension TrackerScreenViewController: TrackersActions {
     func appendTracker(tracker: Tracker, category: String?) {
         guard let category = category else { return }
-        try! self.trackerStore.addNewTracker(tracker)
-        let foundCategory = self.categories.first { ctgry in
-            ctgry.header == category
-        }
-        if foundCategory != nil {
-            self.categories = self.categories.map { ctgry in
-                if (ctgry.header == category) {
-                    var updatedTrackers = ctgry.trackers
-                    updatedTrackers.append(tracker)
-                    return TrackerCategory(header: ctgry.header, trackers: updatedTrackers)
-                } else {
-                    return TrackerCategory(header: ctgry.header, trackers: ctgry.trackers)
-                }
+        do {
+            try self.trackerStore.addNewTracker(tracker)
+            let foundCategory = self.categories.first { ctgry in
+                ctgry.header == category
             }
-        } else {
-            self.categories.append(TrackerCategory(header: category, trackers: [tracker]))
+            if foundCategory != nil {
+                self.categories = self.categories.map { ctgry in
+                    if (ctgry.header == category) {
+                        var updatedTrackers = ctgry.trackers
+                        updatedTrackers.append(tracker)
+                        return TrackerCategory(header: ctgry.header, trackers: updatedTrackers)
+                    } else {
+                        return TrackerCategory(header: ctgry.header, trackers: ctgry.trackers)
+                    }
+                }
+            } else {
+                self.categories.append(TrackerCategory(header: category, trackers: [tracker]))
+            }
+            filterTrackers()
+        } catch {
+            // Обработка ошибок добавления трекера
+            print("Ошибка при добавлении трекера: \(error)")
         }
-        filterTrackers()
     }
-    
-    func reload() {
+        
+        func reload() {
         self.collectionView.reloadData()
     }
     
@@ -319,7 +324,12 @@ extension TrackerScreenViewController: TrackerCellDelegate {
         let calendar = Calendar.current
         if calendar.compare(selectedDate, to: currentDate, toGranularity: .day) != .orderedDescending {
             let trackerRecord = TrackerRecord(id: id, date: selectedDate)
-            try! self.trackerRecordStore.addNewTrackerRecord(trackerRecord)
+            do {
+                try self.trackerRecordStore.addNewTrackerRecord(trackerRecord)
+            } catch {
+                // Обработка ошибок добавления записи трекера
+                print("Ошибка при добавлении записи трекера: \(error)")
+            }
         } else {
             return
         }
@@ -329,7 +339,17 @@ extension TrackerScreenViewController: TrackerCellDelegate {
         let toRemove = completedTrackers.first {
             isSameTrackerRecord(trackerRecord: $0, id: id)
         }
-        try! self.trackerRecordStore.removeTrackerRecord(toRemove)
+        if let trackerRecordToRemove = toRemove {
+            do {
+                try self.trackerRecordStore.removeTrackerRecord(trackerRecordToRemove)
+            } catch {
+                // Обработка ошибок удаления записи трекера
+                print("Ошибка при удалении записи трекера: \(error)")
+            }
+        } else {
+            // Обработка случая, когда запись трекера не найдена
+            print("Запись трекера для удаления не найдена")
+        }
     }
 }
 

@@ -69,11 +69,17 @@ final class TrackerCategoryStore: NSObject {
     }
     
     func addNewTrackerToCategory(to header: String?, tracker: Tracker) throws {
-        guard let fromDb = try self.fetchTrackerCategory(with: header) else { fatalError() }
-        fromDb.trackers = trackerCategories.first {
-            $0.header == header
-        }?.trackers.map { $0.id }
-        fromDb.trackers?.append(tracker.id)
+        do {
+            let fromDb = try self.fetchTrackerCategory(with: header)
+            fromDb?.trackers = trackerCategories.first {
+                $0.header == header
+            }?.trackers.map { $0.id }
+            fromDb?.trackers?.append(tracker.id)
+        } catch TrackerCategoryStoreError.entityNotFound {
+            print("Ошибка: Категория не найдена.")
+        } catch {
+            print("Произошла неизвестная ошибка: \(error)")
+        }
         try context.save()
     }
     
@@ -87,7 +93,7 @@ final class TrackerCategoryStore: NSObject {
     }
     
     func fetchTrackerCategory(with header: String?) throws -> TrackerCategoryCoreData? {
-        guard let header = header else { fatalError() }
+        guard let header = header else { throw TrackerCategoryStoreError.entityNotFound }
         let fetchRequest: NSFetchRequest<TrackerCategoryCoreData> = TrackerCategoryCoreData.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "header == %@", header as CVarArg)
         let result = try context.fetch(fetchRequest)
@@ -99,4 +105,9 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         delegate?.storeCategory()
     }
+}
+
+enum TrackerCategoryStoreError: Error {
+    case entityNotFound
+    case fetchError
 }

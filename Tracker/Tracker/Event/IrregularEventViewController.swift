@@ -241,7 +241,9 @@ extension IrregularEventViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: irregularEventCellReuseIdentifier, for: indexPath) as! IrregularEventCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: irregularEventCellReuseIdentifier, for: indexPath) as? IrregularEventCell else {
+            fatalError("Невозможно создать экземпляр IrregularEventCell")
+        }
             var title = "Категория"
             if let selectedCategory = selectedCategory {
                 title += "\n" + selectedCategory
