@@ -7,19 +7,21 @@
 
 import UIKit
 
-final class EmojiViewCell: UICollectionViewCell {
-    static var reuseID = "EmogiCell"
+final class HabitEmojiCell: UICollectionViewCell {
+    
+    static var reuseId = "HabitEmojiCell"
     
     let emojiLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 32)
-        label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: 32)
+        label.textAlignment = .center
         return label
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+
         contentView.addSubview(emojiLabel)
         
         NSLayoutConstraint.activate([

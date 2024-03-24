@@ -8,91 +8,127 @@
 import UIKit
 
 final class IrregularEventViewController: UIViewController {
-    // Идентификатор ячейки в таблице
-    let irregularEventCellReuseIdentifier = "IrregularEventTableViewCell"
-    // Ссылка на объект делегата для передачи данных о созданном трекере
-    var trackerScreenViewController: TrackersActions?
-    // Массив цветов для нерегулярных событий
-    private let colors: [UIColor] = UIColor.selectionColors
     
-    private let label: UILabel = {
-        let label = UILabel()
-        label.text = "Новое нерегулярное событие"
-        label.font = .systemFont(ofSize: 16, weight: .medium)
-        label.textColor = .blackday
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    let irregularEventCellReuseIdentifier = "IrregularEventTableViewCell"
+    var trackerScreenViewController: TrackersActions?
+    private let addCategoryViewController = CategoryViewController()
+    private var selectedCategory: String?
+    private var selectedColor: UIColor?
+    private var selectedEmoji: String?
+    private let testCategory = "Домашние дела" // удалить после реализации Категорий в 16-м спринте
+    
+    private let colors: [UIColor] = UIColor.selectionColors
+    private let emoji: [String] = String.selectionEmojies
+    
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.isScrollEnabled = true
+        return scrollView
+    }()
+    
+    private let header: UILabel = {
+        let header = UILabel()
+        header.text = "Новое нерегулярное событие"
+        header.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        header.textColor = .blackday
+        return header
     }()
     
     private let addEventName: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "Введите название трекера"
-        textField.backgroundColor = .backgroundday
-        textField.layer.cornerRadius = 16
-        let view = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
-        textField.leftView = view
-        textField.leftViewMode = .always
-        textField.returnKeyType = .done
-        textField.keyboardType = .default
-        textField.becomeFirstResponder()
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        return textField
+        let addTrackerName = UITextField()
+        addTrackerName.placeholder = "Введите название трекера"
+        addTrackerName.backgroundColor = .backgroundday
+        addTrackerName.layer.cornerRadius = 16
+        let leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
+        addTrackerName.leftView = leftView
+        addTrackerName.leftViewMode = .always
+        addTrackerName.returnKeyType = .done
+        addTrackerName.keyboardType = .default
+        addTrackerName.becomeFirstResponder()
+        return addTrackerName
     }()
     
     private let irregularEventTableView: UITableView = {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        return tableView
+        let trackersTableView = UITableView()
+        return trackersTableView
     }()
     
     private lazy var cancelButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitleColor(.redtext, for: .normal)
-        button.layer.borderWidth = 1.0
-        button.layer.borderColor = UIColor.redtext.cgColor
-        button.layer.cornerRadius = 16
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.setTitle("Отменить", for: .normal)
-        button.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
+        let cancelButton = UIButton(type: .custom)
+        cancelButton.setTitleColor(.redtext, for: .normal)
+        cancelButton.layer.borderWidth = 1.0
+        cancelButton.layer.borderColor = UIColor.redtext.cgColor
+        cancelButton.layer.cornerRadius = 16
+        cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        cancelButton.setTitle("Отменить", for: .normal)
+        cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
+        return cancelButton
     }()
     
-    private lazy var cleanButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setImage(UIImage(named: "cleanKeyboard"), for: .normal)
-        button.frame = CGRect(x: 0, y: 0, width: 17, height: 17)
-        button.contentMode = .scaleAspectFit
-        button.addTarget(self, action: #selector(didTapClean), for: .touchUpInside)
-        button.isHidden = true
+    private lazy var clearButton: UIButton = {
+        let clearButton = UIButton(type: .custom)
+        clearButton.setImage(UIImage(named: "cleanKeyboard"), for: .normal)
+        clearButton.frame = CGRect(x: 0, y: 0, width: 17, height: 17)
+        clearButton.contentMode = .scaleAspectFit
+        clearButton.addTarget(self, action: #selector(didTapClean), for: .touchUpInside)
+        clearButton.isHidden = true
         let paddingView = UIView(frame: CGRect(x: 0, y: 0, width: 29, height: 17))
-        paddingView.addSubview(button)
+        paddingView.addSubview(clearButton)
         addEventName.rightView = paddingView
         addEventName.rightViewMode = .whileEditing
-        return button
+        return clearButton
     }()
     
     private lazy var createButton: UIButton = {
-        let button = UIButton(type: .custom)
-        button.setTitleColor(.whiteday, for: .normal)
-        button.backgroundColor = .greyYP
-        button.layer.cornerRadius = 16
-        button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.setTitle("Создать", for: .normal)
-        button.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
-        button.isEnabled = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
+        let createButton = UIButton(type: .custom)
+        createButton.setTitleColor(.whiteday, for: .normal)
+        createButton.backgroundColor = .greyYP
+        createButton.layer.cornerRadius = 16
+        createButton.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        createButton.setTitle("Создать", for: .normal)
+        createButton.addTarget(self, action: #selector(didTapCreateButton), for: .touchUpInside)
+        createButton.isEnabled = false
+        return createButton
+    }()
+    
+    private let emojiCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(EventEmojiCell.self, forCellWithReuseIdentifier: "Event emoji cell")
+        collectionView.register(EventEmojiHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: EventEmojiHeader.id)
+        collectionView.allowsMultipleSelection = false
+        return collectionView
+    }()
+    
+    private let colorCollectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.register(EventColorCell.self, forCellWithReuseIdentifier: "Event color cell")
+        collectionView.register(EventColorHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: EventColorHeader.id)
+        collectionView.allowsMultipleSelection = false
+        return collectionView
     }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .whitebackground
-        configureViews()
-        configureConstraints()
-        // Настройка делегата текстового поля и таблицы
+        view.backgroundColor = .whiteday
+        addSubviews()
+        activateConstraints()
+        [scrollView, header, addEventName, irregularEventTableView, cancelButton, createButton, emojiCollectionView, colorCollectionView].forEach{
+            $0.translatesAutoresizingMaskIntoConstraints = false
+        }
+        setupEventNameTextField()
+        setupIrregularEventTableView()
+        setupEmojiCollectionView()
+        setupColorCollectionView()
+    }
+    
+    private func setupEventNameTextField() {
         addEventName.delegate = self
+    }
+    
+    private func setupIrregularEventTableView() {
         irregularEventTableView.delegate = self
         irregularEventTableView.dataSource = self
         irregularEventTableView.register(IrregularEventCell.self, forCellReuseIdentifier: irregularEventCellReuseIdentifier)
@@ -100,100 +136,127 @@ final class IrregularEventViewController: UIViewController {
         irregularEventTableView.separatorStyle = .none
     }
     
-    private func configureViews() {
-        view.addSubview(label)
-        view.addSubview(addEventName)
-        view.addSubview(irregularEventTableView)
-        view.addSubview(cancelButton)
-        view.addSubview(createButton)
+    private func setupEmojiCollectionView() {
+        emojiCollectionView.dataSource = self
+        emojiCollectionView.delegate = self
     }
     
-    func configureConstraints() {
+    private func setupColorCollectionView() {
+        colorCollectionView.dataSource = self
+        colorCollectionView.delegate = self
+    }
+    
+    private func addSubviews() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(header)
+        scrollView.addSubview(addEventName)
+        scrollView.addSubview(irregularEventTableView)
+        scrollView.addSubview(emojiCollectionView)
+        scrollView.addSubview(colorCollectionView)
+        scrollView.addSubview(cancelButton)
+        scrollView.addSubview(createButton)
+    }
+    
+    private func activateConstraints() {
         NSLayoutConstraint.activate([
-            view.topAnchor.constraint(equalTo: view.topAnchor),
-            view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            label.topAnchor.constraint(equalTo: view.topAnchor, constant: 26),
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            addEventName.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 38),
-            addEventName.centerXAnchor.constraint(equalTo: label.centerXAnchor),
+            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            header.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 26),
+            header.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor),
+            header.heightAnchor.constraint(equalToConstant: 22),
+            addEventName.topAnchor.constraint(equalTo: header.bottomAnchor, constant: 38),
+            addEventName.centerXAnchor.constraint(equalTo: header.centerXAnchor),
             addEventName.heightAnchor.constraint(equalToConstant: 75),
-            addEventName.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            addEventName.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            addEventName.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            addEventName.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             irregularEventTableView.topAnchor.constraint(equalTo: addEventName.bottomAnchor, constant: 24),
-            irregularEventTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            irregularEventTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            irregularEventTableView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
+            irregularEventTableView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             irregularEventTableView.heightAnchor.constraint(equalToConstant: 75),
-            cancelButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -34),
-            cancelButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            cancelButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -(view.frame.width/2) - 4),
+            emojiCollectionView.topAnchor.constraint(equalTo: irregularEventTableView.bottomAnchor, constant: 32),
+            emojiCollectionView.heightAnchor.constraint(equalToConstant: 222),
+            emojiCollectionView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 18),
+            emojiCollectionView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -18),
+            colorCollectionView.topAnchor.constraint(equalTo: emojiCollectionView.bottomAnchor, constant: 16),
+            colorCollectionView.heightAnchor.constraint(equalToConstant: 222),
+            colorCollectionView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 18),
+            colorCollectionView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -18),
+            cancelButton.topAnchor.constraint(equalTo: colorCollectionView.bottomAnchor, constant: 16),
+            cancelButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 0),
+            cancelButton.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 20),
+            cancelButton.trailingAnchor.constraint(equalTo: colorCollectionView.centerXAnchor, constant: -4),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
-            createButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -34),
-            createButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            createButton.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 0),
+            createButton.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -20),
             createButton.heightAnchor.constraint(equalToConstant: 60),
-            createButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: (view.frame.width/2) + 4)
+            createButton.leadingAnchor.constraint(equalTo: colorCollectionView.centerXAnchor, constant: 4)
         ])
     }
-    // Обработчик нажатия на кнопку очистки текстового поля
+    
     @objc private func didTapClean() {
         addEventName.text = ""
     }
-    // Обработчик нажатия на кнопку отмены
+    
     @objc private func didTapCancelButton() {
         dismiss(animated: true)
     }
-    // Обработчик нажатия на кнопку создания события
+    
     @objc private func didTapCreateButton() {
-        // Проверка, что текстовое поле не пустое
-        guard let text = addEventName.text, !text.isEmpty else {
+        guard let text = addEventName.text, !text.isEmpty,
+              let color = selectedColor,
+              let emoji = selectedEmoji else {
             return
         }
-        // Создание нового трекера и передача его в TrackerScreenViewController
-        // Создание нового объекта трекера
-        let newEvent = Tracker(title: text, color: colors[Int.random(in: 0..<self.colors.count)], emoji: "👍", schedule: Weekday.allCases)
-        // Добавление нового трекера к trackerScreenViewController
-        trackerScreenViewController?.appendTracker(tracker: newEvent)
-        // Перезагружаем данные в представлении, чтобы отобразить новый трекер
+        let newEvent = Tracker(id: UUID(), title: text, color: color, emoji: emoji, schedule: Weekday.allCases)
+        trackerScreenViewController?.appendTracker(tracker: newEvent, category: self.selectedCategory)
+        addCategoryViewController.viewModel.addTrackerToCategory(to: self.selectedCategory, tracker: newEvent)
         trackerScreenViewController?.reload()
-        // Закрытие текущего контроллера
         self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
 }
 
 // MARK: - UITableViewDelegate
 extension IrregularEventViewController: UITableViewDelegate {
-    // высота ячейки
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 75
     }
-    // Снятие выделения с выбранной ячейки после того, как пользователь её выберет.
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let addCategoryViewController = CategoryViewController()
+        addCategoryViewController.viewModel.$selectedCategory.bind { [weak self] categoryName in
+            self?.selectedCategory = categoryName?.header
+            self?.irregularEventTableView.reloadData()
+        }
         irregularEventTableView.deselectRow(at: indexPath, animated: true)
+        present(addCategoryViewController, animated: true, completion: nil)
     }
 }
 
 // MARK: - UITableViewDataSource
 extension IrregularEventViewController: UITableViewDataSource {
-    // Количество строк в указанной секции
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1
     }
-    // Создаем и возвращаем ячейку для указанной секции и индекса.
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: irregularEventCellReuseIdentifier, for: indexPath) as! IrregularEventCell
-        // Используем ячейку IrregularEventCell, и устанавливаем текст "Категория"
-        cell.titleLabel.text = "Категория"
-        return cell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: irregularEventCellReuseIdentifier, for: indexPath) as? IrregularEventCell else {
+            fatalError("Невозможно создать экземпляр IrregularEventCell")
+        }
+            var title = "Категория"
+            if let selectedCategory = selectedCategory {
+                title += "\n" + selectedCategory
+            }
+            cell.update(with: title)
+            return cell
     }
 }
 
 // MARK: - UITextFieldDelegate
 extension IrregularEventViewController: UITextFieldDelegate {
-    // Вызываем при изменении текста в текстовом поле. . Также настраивается доступность и цвет кнопки создания (createButton) в зависимости от наличия текста.
     func textFieldDidChangeSelection(_ textField: UITextField) {
-        // Определяем, пусто ли текстовое поле, и соответственно, скрываем или показываем кнопку очистки (cleanButton)
-        cleanButton.isHidden = textField.text?.isEmpty ?? true
+        clearButton.isHidden = textField.text?.isEmpty ?? true
         if textField.text?.isEmpty ?? false {
             createButton.isEnabled = false
             createButton.backgroundColor = .greyYP
@@ -202,10 +265,123 @@ extension IrregularEventViewController: UITextFieldDelegate {
             createButton.backgroundColor = .blackday
         }
     }
-    // Вызывается при нажатии на клавишу Return на клавиатуре
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        // Скрываем клавиатуру, вызывая метод resignFirstResponder()
         textField.resignFirstResponder()
         return true
+    }
+}
+
+// MARK: - UICollectionViewDataSource
+extension IrregularEventViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 18
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if collectionView == emojiCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Event emoji cell", for: indexPath) as? EventEmojiCell else {
+                return UICollectionViewCell()
+            }
+            let emojiIndex = indexPath.item % emoji.count
+            let selectedEmoji = emoji[emojiIndex]
+            
+            cell.emojiLabel.text = selectedEmoji
+            cell.layer.cornerRadius = 16
+            
+            return cell
+        } else if collectionView == colorCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Event color cell", for: indexPath) as? EventColorCell else {
+                return UICollectionViewCell()
+            }
+            
+            let colorIndex = indexPath.item % colors.count
+            let selectedColor = colors[colorIndex]
+            
+            cell.colorView.backgroundColor = selectedColor
+            cell.layer.cornerRadius = 8
+            
+            return cell
+        }
+        return UICollectionViewCell()
+    }
+    
+    func collectionView(_ collectionView:UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        if collectionView == emojiCollectionView {
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: EventEmojiHeader.id, for: indexPath) as? EventEmojiHeader else {
+                return UICollectionReusableView()
+            }
+            header.headerText = "Emoji"
+            return header
+        } else if collectionView == colorCollectionView {
+            guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: EventColorHeader.id, for: indexPath) as? EventColorHeader else {
+                return UICollectionReusableView()
+            }
+            header.headerText = "Цвет"
+            return header
+        }
+        
+        return UICollectionReusableView()
+    }
+}
+
+// MARK: - UICollectionViewDelegateFlowLayout
+extension IrregularEventViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let collectionViewWidth = collectionView.bounds.width - 36
+        let cellWidth = collectionViewWidth / 6
+        return CGSize(width: cellWidth, height: cellWidth)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 5
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        return CGSize(width: collectionView.bounds.width, height: 18)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        return UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
+    }
+    
+}
+
+// MARK: - UICollectionViewDelegate
+extension IrregularEventViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if collectionView == emojiCollectionView {
+            let cell = collectionView.cellForItem(at: indexPath) as? EventEmojiCell
+            cell?.backgroundColor = .backgroundday
+            
+            selectedEmoji = cell?.emojiLabel.text
+        } else if collectionView == colorCollectionView {
+            let cell = collectionView.cellForItem(at: indexPath) as? EventColorCell
+            cell?.layer.borderWidth = 3
+            cell?.layer.borderColor = cell?.colorView.backgroundColor?.withAlphaComponent(0.3).cgColor
+            
+            selectedColor = cell?.colorView.backgroundColor
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        if collectionView == emojiCollectionView {
+            let cell = collectionView.cellForItem(at: indexPath) as? EventEmojiCell
+            cell?.backgroundColor = .whiteday
+        } else if collectionView == colorCollectionView {
+            let cell = collectionView.cellForItem(at: indexPath) as? EventColorCell
+            cell?.layer.borderWidth = 0
+        }
+    }
+}
+
+extension IrregularEventViewController {
+    enum ErrorCreateNewTracker: Error {
+        case errorCreatNewEvent
     }
 }

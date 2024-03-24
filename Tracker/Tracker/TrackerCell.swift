@@ -6,7 +6,7 @@
 //
 
 import UIKit
-// Протокол делегата для обработки действий с ячейкой трекера
+
 protocol TrackerCellDelegate: AnyObject {
     func completeTracker(id: UUID, at indexPath: IndexPath)
     func uncompleteTracker(id: UUID, at indexPath: IndexPath)
@@ -14,9 +14,7 @@ protocol TrackerCellDelegate: AnyObject {
 
 final class TrackerCell: UICollectionViewCell {
     
-    // Идентификатор ячейки — используется для регистрации и восстановления:
     static var reuseId = "cell"
-    // Слабая ссылка на делегата
     weak var delegate: TrackerCellDelegate?
     private var isCompletedToday: Bool = false
     private var trackerId: UUID?
@@ -26,7 +24,7 @@ final class TrackerCell: UICollectionViewCell {
         let trackersDaysAmount = UILabel()
         trackersDaysAmount.frame = CGRect(x: 120, y: 106, width: 101, height: 18)
         trackersDaysAmount.translatesAutoresizingMaskIntoConstraints = false
-        trackersDaysAmount.font = .systemFont(ofSize: 12, weight: .medium)
+        trackersDaysAmount.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         trackersDaysAmount.textColor = .blackday
         return trackersDaysAmount
     }()
@@ -35,7 +33,7 @@ final class TrackerCell: UICollectionViewCell {
         let trackerDescription = UILabel()
         trackerDescription.frame = CGRect(x: 120, y: 106, width: 143, height: 34)
         trackerDescription.translatesAutoresizingMaskIntoConstraints = false
-        trackerDescription.font = .systemFont(ofSize: 12, weight: .medium)
+        trackerDescription.font = UIFont.systemFont(ofSize: 12, weight: .medium)
         trackerDescription.textColor = .whiteday
         trackerDescription.numberOfLines = 0
         trackerDescription.lineBreakMode = .byWordWrapping
@@ -50,17 +48,11 @@ final class TrackerCell: UICollectionViewCell {
         return trackerCard
     }()
     
-    private let plusButtonImage:UIImage = {
-        let image = UIImage(systemName: "plus")!
-        return image
-    }()
-    
     private lazy var completedTrackerButton: UIButton = {
         let completedTrackerButton = UIButton(type: .custom)
-        completedTrackerButton.layer.cornerRadius = 17
-        completedTrackerButton.tintColor = .whiteday
-        completedTrackerButton.addTarget(self, action: #selector(didTapCompletedTrackerButton), for: .touchUpInside)
+        completedTrackerButton.frame = CGRect(x: 100, y: 100, width: 34, height: 34)
         completedTrackerButton.translatesAutoresizingMaskIntoConstraints = false
+        completedTrackerButton.addTarget(self, action: #selector(completedTracker), for: .touchUpInside)
         return completedTrackerButton
     }()
     
@@ -77,25 +69,33 @@ final class TrackerCell: UICollectionViewCell {
         let trackerEmoji = UILabel()
         trackerEmoji.frame = CGRect(x: 0, y: 0, width: 18, height: 18)
         trackerEmoji.translatesAutoresizingMaskIntoConstraints = false
-        trackerEmoji.font = .systemFont(ofSize: 14, weight: .medium)
+        trackerEmoji.font = UIFont.systemFont(ofSize: 14, weight: .medium)
         return trackerEmoji
     }()
     
-    // Конструктор:
     override init(frame: CGRect) {
         super.init(frame: frame)
-        // Настройка внешнего вида ячейки
+        
         contentView.layer.cornerRadius = 16
         contentView.layer.masksToBounds = true
-        // Настройка элементов интерфейса
-        configureViews()
-        configureConstraints()
+        addSubviews()
+        
+        NSLayoutConstraint.activate([
+            trackersDaysAmount.topAnchor.constraint(equalTo: trackerCard.bottomAnchor, constant: 16),
+            trackersDaysAmount.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            trackerDescription.leadingAnchor.constraint(equalTo: trackerCard.leadingAnchor, constant: 12),
+            trackerDescription.bottomAnchor.constraint(equalTo: trackerCard.bottomAnchor, constant: -12),
+            completedTrackerButton.centerYAnchor.constraint(equalTo: trackersDaysAmount.centerYAnchor),
+            completedTrackerButton.trailingAnchor.constraint(equalTo: trackerCard.trailingAnchor, constant: -12),
+            trackerEmoji.centerXAnchor.constraint(equalTo: emojiBackground.centerXAnchor),
+            trackerEmoji.centerYAnchor.constraint(equalTo: emojiBackground.centerYAnchor),
+        ])
     }
-    // Метод, вызываемый при инициализации из интерфейса Builder (Storyboard, XIB и др.)
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    // Метод для настройки содержимого ячейки на основе переданных данных
+    
     func configure(tracker: Tracker, isCompletedToday: Bool, completedDays: Int, indexPath: IndexPath) {
         self.isCompletedToday = isCompletedToday
         self.indexPath = indexPath
@@ -104,16 +104,12 @@ final class TrackerCell: UICollectionViewCell {
         trackerDescription.text = tracker.title
         trackerEmoji.text = tracker.emoji
         trackersDaysAmount.text = formatCompletedDays(completedDays)
-        completedTrackerButton.backgroundColor = trackerCard.backgroundColor
-        // установка прозрачности иконки в зависимости от того, был ли трекер завершен в текущий день (isCompletedToday).
-        let plusButtonOpacity: Float = isCompletedToday ? 0.3 : 1
-        completedTrackerButton.layer.opacity = plusButtonOpacity
-        // Установка иконки на кнопке completedTrackerButton в зависимости от того, был ли трекер завершен в текущий день (isCompletedToday).
-        let image = isCompletedToday ? (UIImage(named: "Done")) : plusButtonImage
+        
+        let image = isCompletedToday ? (UIImage(named: "Tracker Done")?.withTintColor(trackerCard.backgroundColor ?? .whiteday)) : (UIImage(named: "Plus")?.withTintColor(trackerCard.backgroundColor ?? .whiteday))
         completedTrackerButton.setImage(image, for: .normal)
     }
     
-    private func configureViews() {
+    private func addSubviews() {
         contentView.addSubview(trackersDaysAmount)
         contentView.addSubview(trackerCard)
         contentView.addSubview(completedTrackerButton)
@@ -122,21 +118,6 @@ final class TrackerCell: UICollectionViewCell {
         contentView.addSubview(trackerDescription)
     }
     
-    func configureConstraints() {
-        NSLayoutConstraint.activate([
-            trackersDaysAmount.topAnchor.constraint(equalTo: trackerCard.bottomAnchor, constant: 16),
-            trackersDaysAmount.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            trackerDescription.leadingAnchor.constraint(equalTo: trackerCard.leadingAnchor, constant: 12),
-            trackerDescription.bottomAnchor.constraint(equalTo: trackerCard.bottomAnchor, constant: -12),
-            completedTrackerButton.centerYAnchor.constraint(equalTo: trackersDaysAmount.centerYAnchor),
-            completedTrackerButton.trailingAnchor.constraint(equalTo: trackerCard.trailingAnchor, constant: -12),
-            completedTrackerButton.widthAnchor.constraint(equalToConstant: 34),
-            completedTrackerButton.heightAnchor.constraint(equalToConstant: 34),
-            trackerEmoji.centerXAnchor.constraint(equalTo: emojiBackground.centerXAnchor),
-            trackerEmoji.centerYAnchor.constraint(equalTo: emojiBackground.centerYAnchor)
-        ])
-    }
-    // Приватный метод для форматирования строки с количеством завершенных дней в соответствии с русской грамматикой
     private func formatCompletedDays(_ completedDays: Int) -> String {
         let lastDigit = completedDays % 10
         let lastTwoDigits = completedDays % 100
@@ -153,8 +134,8 @@ final class TrackerCell: UICollectionViewCell {
             return "\(completedDays) дней"
         }
     }
-    // Обработчик нажатия на кнопку завершения трекера
-    @objc private func didTapCompletedTrackerButton() {
+    
+    @objc private func completedTracker() {
         guard let trackerId = trackerId, let indexPath = indexPath else {
             assertionFailure("no trackerId")
             return
